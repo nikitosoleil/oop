@@ -195,7 +195,7 @@ public class MyApplication extends SimpleApplication {
 
     public Material getBallMat(ColorRGBA color, float shininess) {
         Material mat = default_mat.clone();
-        mat.setTexture("NormalMap", assetManager.loadTexture("Textures/Terrain/Rock/Rock_normal.png"));
+//        mat.setTexture("NormalMap", assetManager.loadTexture("Textures/Terrain/Rock/Rock_normal.png"));
         mat.setBoolean("UseMaterialColors", true);
         mat.setColor("Diffuse", color);
         mat.setColor("Specular", color);
