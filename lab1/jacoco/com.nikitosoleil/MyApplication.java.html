@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MyApplication.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">lab1_1$AppTest.exec</a> &gt; <a href="index.source.html" class="el_package">com.nikitosoleil</a> &gt; <span class="el_source">MyApplication.java</span></div><h1>MyApplication.java</h1><pre class="source lang-java linenums">package com.nikitosoleil;
+
+import com.jme3.app.SimpleApplication;
+import com.jme3.input.controls.KeyTrigger;
+import com.jme3.input.controls.Trigger;
+import com.jme3.math.ColorRGBA;
+import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.light.DirectionalLight;
+import com.jme3.light.AmbientLight;
+import com.jme3.shadow.DirectionalLightShadowFilter;
+import com.jme3.shadow.EdgeFilteringMode;
+import com.jme3.input.MouseInput;
+import com.jme3.input.KeyInput;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.MouseButtonTrigger;
+import com.jme3.material.Material;
+import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue.ShadowMode;
+import com.jme3.post.FilterPostProcessor;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.shape.Box;
+import com.jme3.scene.shape.Sphere;
+
+import java.util.Vector;
+
+<span class="fc" id="L27">public class MyApplication extends SimpleApplication {</span>
+    // BALL CONFIGS
+<span class="fc" id="L29">    protected static final Sphere sphere = new Sphere(64, 64, 0.5f, true, false);</span>
+    protected static final float shoot_distance = 3.0f;
+    protected static final float shoot_speed = 25.0f;
+    protected static final float ball_weight = 2.0f;
+
+    // CAMERA CONFIGS
+<span class="fc" id="L35">    protected static final Vector3f cam_pos = new Vector3f(0, 8f, 14f);</span>
+<span class="fc" id="L36">    protected static final Vector3f cam_look = new Vector3f(0, 2, 0);</span>
+    protected static final float cam_speed = 5.0f;
+
+    // LIGHTING CONFIGS
+<span class="fc" id="L40">    protected static final Vector3f light_direction = new Vector3f(-1.0f, -2.0f, -1.5f);</span>
+<span class="fc" id="L41">    protected static final ColorRGBA directional_light_color = ColorRGBA.White;</span>
+<span class="fc" id="L42">    protected static final ColorRGBA ambient_light_color = new ColorRGBA(0.1f, 0.1f, 0.1f, 0.f);</span>
+
+    // FILTERS CONFIGS
+    protected static final int shadowmap_size = 4096;
+    protected static final int nb_splits = 4;
+    protected static final float shadow_lambda = 0.6f;
+    protected static final float shadow_intensity = 0.5f;
+
+    private BulletAppState bulletAppState;
+    private Material default_mat;
+
+<span class="fc" id="L53">    private Vector&lt;Geometry&gt; walls = new Vector&lt;Geometry&gt;();</span>
+<span class="fc" id="L54">    private Vector&lt;Geometry&gt; balls = new Vector&lt;Geometry&gt;();</span>
+
+    private AmbientLight ambientLight;
+    private DirectionalLight directionalLight;
+    private DirectionalLightShadowFilter dlsFilter;
+
+<span class="fc" id="L60">    private boolean noInit = false;</span>
+
+    // GETTERS
+
+    public AmbientLight getAmbientLight() {
+<span class="fc" id="L65">        return ambientLight;</span>
+    }
+
+    public DirectionalLight getDirectionalLight() {
+<span class="fc" id="L69">        return directionalLight;</span>
+    }
+
+    public DirectionalLightShadowFilter getDlsFilter() {
+<span class="fc" id="L73">        return dlsFilter;</span>
+    }
+
+    public Vector&lt;Geometry&gt; getWalls() {
+<span class="fc" id="L77">        return walls;</span>
+    }
+
+    public Vector&lt;Geometry&gt; getBalls() {
+<span class="fc" id="L81">        return balls;</span>
+    }
+
+    // IMPLEMENTATION
+
+    @Override
+    public void simpleInitApp() {
+<span class="fc" id="L88">        bulletAppState = new BulletAppState();</span>
+<span class="fc" id="L89">        stateManager.attach(bulletAppState);</span>
+
+<span class="fc" id="L91">        default_mat = new Material(assetManager, &quot;Common/MatDefs/Light/Lighting.j3md&quot;);</span>
+
+<span class="pc bpc" id="L93" title="1 of 2 branches missed.">        if (!noInit) {</span>
+<span class="nc" id="L94">            initCam();</span>
+<span class="nc" id="L95">            initLights();</span>
+<span class="nc" id="L96">            initFilters();</span>
+<span class="nc" id="L97">            initWalls();</span>
+<span class="nc" id="L98">            initMappings();</span>
+        }
+<span class="fc" id="L100">    }</span>
+
+    public void parentInit() {
+<span class="fc" id="L103">        noInit = true;</span>
+<span class="fc" id="L104">        initialize();</span>
+<span class="fc" id="L105">        noInit = false;</span>
+<span class="fc" id="L106">    }</span>
+
+    public void initCam() {
+<span class="fc" id="L109">        cam.setLocation(cam_pos);</span>
+<span class="fc" id="L110">        cam.lookAt(cam_look, Vector3f.UNIT_Y);</span>
+<span class="fc" id="L111">        flyCam.setMoveSpeed(cam_speed);</span>
+<span class="fc" id="L112">    }</span>
+
+    public void initLights() {
+<span class="fc" id="L115">        directionalLight = new DirectionalLight(light_direction, directional_light_color);</span>
+<span class="fc" id="L116">        rootNode.addLight(directionalLight);</span>
+
+<span class="fc" id="L118">        ambientLight = new AmbientLight(ambient_light_color);</span>
+<span class="fc" id="L119">        rootNode.addLight(ambientLight);</span>
+<span class="fc" id="L120">    }</span>
+
+    public DirectionalLightShadowFilter constructDlsFilter() {
+<span class="fc" id="L123">        DirectionalLightShadowFilter dlsf = new DirectionalLightShadowFilter(assetManager, shadowmap_size, nb_splits);</span>
+<span class="fc" id="L124">        dlsf.setLambda(shadow_lambda);</span>
+<span class="fc" id="L125">        dlsf.setShadowIntensity(shadow_intensity);</span>
+<span class="fc" id="L126">        dlsf.setEdgeFilteringMode(EdgeFilteringMode.Nearest);</span>
+<span class="fc" id="L127">        return dlsf;</span>
+    }
+
+    public void initFilters() {
+<span class="fc" id="L131">        dlsFilter = constructDlsFilter();</span>
+<span class="fc" id="L132">        dlsFilter.setLight(directionalLight);</span>
+<span class="fc" id="L133">        FilterPostProcessor fpp = new FilterPostProcessor(assetManager);</span>
+<span class="fc" id="L134">        fpp.addFilter(dlsFilter);</span>
+<span class="fc" id="L135">        viewPort.addProcessor(fpp);</span>
+<span class="fc" id="L136">    }</span>
+
+    public void initMappings() {
+<span class="fc" id="L139">        addMapping(&quot;shoot&quot;, new MouseButtonTrigger(MouseInput.BUTTON_LEFT));</span>
+<span class="fc" id="L140">        addMapping(&quot;ambientLight&quot;, new KeyTrigger(KeyInput.KEY_1));</span>
+<span class="fc" id="L141">        addMapping(&quot;directionalLight&quot;, new KeyTrigger(KeyInput.KEY_2));</span>
+<span class="fc" id="L142">        addMapping(&quot;shadowFilter&quot;, new KeyTrigger(KeyInput.KEY_3));</span>
+<span class="fc" id="L143">    }</span>
+
+    public void addMapping(String name, Trigger trigger) {
+<span class="fc" id="L146">        inputManager.addMapping(name, trigger);</span>
+<span class="fc" id="L147">        inputManager.addListener(actionListener, name);</span>
+<span class="fc" id="L148">    }</span>
+
+<span class="fc" id="L150">    protected ActionListener actionListener = new ActionListener() {</span>
+        public void onAction(String name, boolean keyPressed, float tpf) {
+<span class="fc bfc" id="L152" title="All 4 branches covered.">            if (name.equals(&quot;shoot&quot;) &amp;&amp; !keyPressed) {</span>
+<span class="fc" id="L153">                newBall();</span>
+<span class="fc bfc" id="L154" title="All 4 branches covered.">            } else if (name.equals(&quot;ambientLight&quot;) &amp;&amp; !keyPressed) {</span>
+<span class="fc" id="L155">                Switch.light(ambientLight);</span>
+<span class="fc bfc" id="L156" title="All 4 branches covered.">            } else if (name.equals(&quot;directionalLight&quot;) &amp;&amp; !keyPressed) {</span>
+<span class="fc" id="L157">                Switch.light(directionalLight);</span>
+<span class="fc bfc" id="L158" title="All 4 branches covered.">            } else if (name.equals(&quot;shadowFilter&quot;) &amp;&amp; !keyPressed) {</span>
+<span class="fc" id="L159">                Switch.filter(dlsFilter);</span>
+            }
+<span class="fc" id="L161">        }</span>
+    };
+
+    public void initWalls() {
+<span class="fc" id="L165">        addWall(new Vector3f(10f, 2f, 0.1f), new Vector3f(0f, 2f, 10f));</span>
+<span class="fc" id="L166">        addWall(new Vector3f(10f, 2f, 0.1f), new Vector3f(0f, 2f, -10f));</span>
+<span class="fc" id="L167">        addWall(new Vector3f(0.1f, 2f, 10f), new Vector3f(-10f, 2f, 0f));</span>
+<span class="fc" id="L168">        addWall(new Vector3f(0.1f, 2f, 10f), new Vector3f(10f, 2f, 0f));</span>
+<span class="fc" id="L169">        addWall(new Vector3f(5f, 0.1f, 5f), new Vector3f(0f, 2f, 0f));</span>
+<span class="fc" id="L170">        addWall(new Vector3f(10f, 0.1f, 10f), new Vector3f(0f, 0f, 0f));</span>
+<span class="fc" id="L171">    }</span>
+
+    public RigidBodyControl extendPhys(Geometry geo, float m) {
+<span class="fc" id="L174">        RigidBodyControl phy = new RigidBodyControl(m);</span>
+<span class="fc" id="L175">        geo.addControl(phy);</span>
+<span class="fc" id="L176">        bulletAppState.getPhysicsSpace().add(phy);</span>
+<span class="fc" id="L177">        return phy;</span>
+    }
+
+    public Geometry createWallGeo(Vector3f dims, Vector3f pos) {
+<span class="fc" id="L181">        Box wall_box = new Box(dims.x, dims.y, dims.z);</span>
+<span class="fc" id="L182">        Geometry wall_geo = new Geometry(&quot;Wall&quot;, wall_box);</span>
+<span class="fc" id="L183">        wall_geo.setMaterial(default_mat);</span>
+<span class="fc" id="L184">        wall_geo.setShadowMode(ShadowMode.CastAndReceive);</span>
+<span class="fc" id="L185">        wall_geo.setLocalTranslation(pos);</span>
+<span class="fc" id="L186">        return wall_geo;</span>
+    }
+
+    public void addWall(Vector3f dims, Vector3f pos) {
+<span class="fc" id="L190">        Geometry wall_geo = createWallGeo(dims, pos);</span>
+<span class="fc" id="L191">        rootNode.attachChild(wall_geo);</span>
+<span class="fc" id="L192">        extendPhys(wall_geo, 0.0f);</span>
+<span class="fc" id="L193">        walls.add(wall_geo);</span>
+<span class="fc" id="L194">    }</span>
+
+    public Material getBallMat(ColorRGBA color, float shininess) {
+<span class="fc" id="L197">        Material mat = default_mat.clone();</span>
+<span class="fc" id="L198">        mat.setTexture(&quot;NormalMap&quot;, assetManager.loadTexture(&quot;Textures/Terrain/Rock/Rock_normal.png&quot;));</span>
+<span class="fc" id="L199">        mat.setBoolean(&quot;UseMaterialColors&quot;, true);</span>
+<span class="fc" id="L200">        mat.setColor(&quot;Diffuse&quot;, color);</span>
+<span class="fc" id="L201">        mat.setColor(&quot;Specular&quot;, color);</span>
+<span class="fc" id="L202">        mat.setFloat(&quot;Shininess&quot;, shininess);</span>
+<span class="fc" id="L203">        return mat;</span>
+    }
+
+    public Geometry createBallGeo() {
+<span class="fc" id="L207">        Geometry ball_geo = new Geometry(&quot;Ball&quot;, sphere);</span>
+<span class="fc" id="L208">        Material mat = getBallMat(ColorRGBA.randomColor(), 64f);</span>
+<span class="fc" id="L209">        ball_geo.setMaterial(mat);</span>
+<span class="fc" id="L210">        ball_geo.setShadowMode(ShadowMode.CastAndReceive);</span>
+<span class="fc" id="L211">        return ball_geo;</span>
+    }
+
+    public void newBall() {
+<span class="fc" id="L215">        Geometry ball_geo = createBallGeo();</span>
+<span class="fc" id="L216">        rootNode.attachChild(ball_geo);</span>
+<span class="fc" id="L217">        ball_geo.setLocalTranslation(cam.getLocation().add(cam.getDirection().mult(shoot_distance)));</span>
+<span class="fc" id="L218">        RigidBodyControl ball_phy = extendPhys(ball_geo, ball_weight);</span>
+<span class="fc" id="L219">        ball_phy.setLinearVelocity(cam.getDirection().mult(shoot_speed));</span>
+<span class="fc" id="L220">        balls.add(ball_geo);</span>
+<span class="fc" id="L221">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
