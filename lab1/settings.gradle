@@ -1,0 +1,5 @@
+rootProject.name = 'lab1.1'
+rootProject.name = 'lab1.1'
+include 'src/test'
+findProject(':src/test')?.name = 'test'
+
