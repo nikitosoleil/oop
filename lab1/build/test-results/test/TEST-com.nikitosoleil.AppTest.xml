@@ -1,43 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.nikitosoleil.AppTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2019-11-12T05:03:23" hostname="NikiPC" time="0.029">
+<testsuite name="com.nikitosoleil.AppTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2019-11-12T09:54:37" hostname="NikiLaptop" time="1.01">
   <properties/>
+  <testcase name="test00_initApp" classname="com.nikitosoleil.AppTest" time="1.003"/>
   <testcase name="test01_initCam" classname="com.nikitosoleil.AppTest" time="0.0"/>
-  <testcase name="test03_initLights" classname="com.nikitosoleil.AppTest" time="0.0"/>
-  <testcase name="test04_constructDlsf" classname="com.nikitosoleil.AppTest" time="0.008"/>
-  <testcase name="test05_initFilters" classname="com.nikitosoleil.AppTest" time="0.002"/>
-  <testcase name="test06_initWalls" classname="com.nikitosoleil.AppTest" time="0.004"/>
-  <testcase name="test100_shoot" classname="com.nikitosoleil.AppTest" time="0.001"/>
+  <testcase name="test03_initLights" classname="com.nikitosoleil.AppTest" time="0.001"/>
+  <testcase name="test04_constructDlsf" classname="com.nikitosoleil.AppTest" time="0.001"/>
+  <testcase name="test05_initFilters" classname="com.nikitosoleil.AppTest" time="0.0"/>
+  <testcase name="test09_initWalls" classname="com.nikitosoleil.AppTest" time="0.001"/>
   <testcase name="test10_initMappings" classname="com.nikitosoleil.AppTest" time="0.0"/>
   <testcase name="test11_ambient_light_switch" classname="com.nikitosoleil.AppTest" time="0.001"/>
-  <testcase name="test12_directional_light_switch" classname="com.nikitosoleil.AppTest" time="0.001"/>
+  <testcase name="test12_directional_light_switch" classname="com.nikitosoleil.AppTest" time="0.0"/>
   <testcase name="test13_shadow_switch" classname="com.nikitosoleil.AppTest" time="0.0"/>
+  <testcase name="test14_shoot" classname="com.nikitosoleil.AppTest" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[Nov 12, 2019 7:03:23 AM com.jme3.system.JmeDesktopSystem initialize
+  <system-err><![CDATA[Nov 12, 2019 11:54:37 AM com.jme3.system.JmeDesktopSystem initialize
 INFO: Running on jMonkeyEngine 3.2-stable
  * Branch: HEAD
  * Git Hash: 8291d61
  * Build Date: 2019-07-13
-Nov 12, 2019 7:03:23 AM com.jme3.asset.AssetConfig loadText
+Nov 12, 2019 11:54:38 AM com.jme3.asset.AssetConfig loadText
 WARNING: Cannot find loader com.jme3.scene.plugins.blender.BlenderModelLoader
-Nov 12, 2019 7:03:23 AM com.jme3.asset.AssetConfig loadText
-WARNING: Cannot find loader com.jme3.scene.plugins.blender.BlenderModelLoader
-Nov 12, 2019 7:03:23 AM com.jme3.app.LegacyApplication start
-WARNING: start() called when application already created!
-Nov 12, 2019 7:03:23 AM com.jme3.app.LegacyApplication start
-WARNING: start() called when application already created!
-Nov 12, 2019 7:03:23 AM com.jme3.app.LegacyApplication start
-WARNING: start() called when application already created!
-Nov 12, 2019 7:03:23 AM com.jme3.app.LegacyApplication start
-WARNING: start() called when application already created!
-Nov 12, 2019 7:03:23 AM com.jme3.app.LegacyApplication start
-WARNING: start() called when application already created!
-Nov 12, 2019 7:03:23 AM com.jme3.app.LegacyApplication start
-WARNING: start() called when application already created!
-Nov 12, 2019 7:03:23 AM com.jme3.app.LegacyApplication start
-WARNING: start() called when application already created!
-Nov 12, 2019 7:03:23 AM com.jme3.app.LegacyApplication start
-WARNING: start() called when application already created!
-Nov 12, 2019 7:03:23 AM com.jme3.app.LegacyApplication start
-WARNING: start() called when application already created!
 ]]></system-err>
 </testsuite>

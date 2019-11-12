@@ -16,17 +16,25 @@ import org.junit.runners.MethodSorters;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AppTest {
     private static final double delta = 1e-7;
-    private static MyApplication app = new MyApplication();
+    private static MyApplication app;
     private String[] actions = new String[]{"shoot", "ambientLight", "directionalLight", "shadowFilter"};
 
-    public AppTest() {
-        app.start(JmeContext.Type.Headless, false);
-        app.parentInit();
+    @Test
+    public void test00_initApp() {
+        Thread appThread = new Thread(() -> {
+            app = new MyApplication();
+            app.setShowSettings(false);
+            app.start(JmeContext.Type.Headless, true);
+        });
+        appThread.start();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ignore) {
+        }
     }
 
     @Test
     public void test01_initCam() {
-        app.initCam();
         Assert.assertEquals(MyApplication.cam_pos, app.getCamera().getLocation());
         Vector3f dir = MyApplication.cam_look.subtract(MyApplication.cam_pos).normalize();
         Assert.assertEquals(0.f, app.getCamera().getDirection().distance(dir), delta);
@@ -35,14 +43,12 @@ public class AppTest {
 
     @Test
     public void test03_initLights() {
-        app.initLights();
-
         DirectionalLight dl = app.getDirectionalLight();
-        Assert.assertEquals(dl.getDirection(), MyApplication.light_direction.normalize());
-        Assert.assertEquals(dl.getColor(), MyApplication.directional_light_color);
+        Assert.assertEquals(dl.getDirection(), Enlighter.light_direction.normalize());
+        Assert.assertEquals(dl.getColor(), Enlighter.directional_light_color);
 
         AmbientLight al = app.getAmbientLight();
-        Assert.assertEquals(al.getColor(), MyApplication.ambient_light_color);
+        Assert.assertEquals(al.getColor(), Enlighter.ambient_light_color);
 
         Node root = app.getRootNode();
         LightList ll = root.getLocalLightList();
@@ -51,27 +57,24 @@ public class AppTest {
 
     @Test
     public void test04_constructDlsf() {
-        DirectionalLightShadowFilter dlsf = app.constructDlsFilter();
-        Assert.assertEquals(MyApplication.shadow_lambda, dlsf.getLambda(), delta);
-        Assert.assertEquals(MyApplication.shadow_intensity, dlsf.getShadowIntensity(), delta);
+        DirectionalLightShadowFilter dlsf = app.getEnlighter().constructDlsFilter();
+        Assert.assertEquals(Enlighter.shadow_lambda, dlsf.getLambda(), delta);
+        Assert.assertEquals(Enlighter.shadow_intensity, dlsf.getShadowIntensity(), delta);
     }
 
     @Test
     public void test05_initFilters() {
-        app.initFilters();
         Assert.assertEquals(app.getDirectionalLight(), app.getDlsFilter().getLight());
         Assert.assertEquals(1, app.getViewPort().getProcessors().size());
     }
 
     @Test
-    public void test06_initWalls() {
-        app.initWalls();
+    public void test09_initWalls() {
         Assert.assertEquals(6, app.getWalls().size());
     }
 
     @Test
     public void test10_initMappings() {
-        app.initMappings();
         for (String action : actions) {
             Assert.assertTrue(app.getInputManager().hasMapping(action));
         }
@@ -80,42 +83,42 @@ public class AppTest {
     @Test
     public void test11_ambient_light_switch() {
         Assert.assertTrue(app.getAmbientLight().isEnabled());
-        app.actionListener.onAction("ambientLight", false, 0.0f);
+        app.getActionListener().onAction("ambientLight", false, 0.0f);
         Assert.assertFalse(app.getAmbientLight().isEnabled());
-        app.actionListener.onAction("ambientLight", false, 0.0f);
+        app.getActionListener().onAction("ambientLight", false, 0.0f);
         Assert.assertTrue(app.getAmbientLight().isEnabled());
-        app.actionListener.onAction("ambientLight", true, 0.0f);
+        app.getActionListener().onAction("ambientLight", true, 0.0f);
         Assert.assertTrue(app.getAmbientLight().isEnabled());
     }
 
     @Test
     public void test12_directional_light_switch() {
         Assert.assertTrue(app.getDirectionalLight().isEnabled());
-        app.actionListener.onAction("directionalLight", false, 0.0f);
+        app.getActionListener().onAction("directionalLight", false, 0.0f);
         Assert.assertFalse(app.getDirectionalLight().isEnabled());
-        app.actionListener.onAction("directionalLight", false, 0.0f);
+        app.getActionListener().onAction("directionalLight", false, 0.0f);
         Assert.assertTrue(app.getDirectionalLight().isEnabled());
-        app.actionListener.onAction("directionalLight", true, 0.0f);
+        app.getActionListener().onAction("directionalLight", true, 0.0f);
         Assert.assertTrue(app.getDirectionalLight().isEnabled());
     }
 
     @Test
     public void test13_shadow_switch() {
         Assert.assertTrue(app.getDlsFilter().isEnabled());
-        app.actionListener.onAction("shadowFilter", false, 0.0f);
+        app.getActionListener().onAction("shadowFilter", false, 0.0f);
         Assert.assertFalse(app.getDlsFilter().isEnabled());
-        app.actionListener.onAction("shadowFilter", false, 0.0f);
+        app.getActionListener().onAction("shadowFilter", false, 0.0f);
         Assert.assertTrue(app.getDlsFilter().isEnabled());
-        app.actionListener.onAction("shadowFilter", true, 0.0f);
+        app.getActionListener().onAction("shadowFilter", true, 0.0f);
         Assert.assertTrue(app.getDlsFilter().isEnabled());
     }
 
     @Test
-    public void test100_shoot() {
+    public void test14_shoot() {
         Assert.assertEquals(0, app.getBalls().size());
-        app.actionListener.onAction("shoot", false, 0.0f);
+        app.getActionListener().onAction("shoot", false, 0.0f);
         Assert.assertEquals(1, app.getBalls().size());
-        app.actionListener.onAction("shoot", true, 0.0f);
+        app.getActionListener().onAction("shoot", true, 0.0f);
         Assert.assertEquals(1, app.getBalls().size());
     }
 }
