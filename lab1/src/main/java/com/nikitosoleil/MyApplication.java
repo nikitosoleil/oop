@@ -4,24 +4,17 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.Trigger;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.light.DirectionalLight;
-import com.jme3.light.AmbientLight;
-import com.jme3.shadow.DirectionalLightShadowFilter;
 import com.jme3.input.MouseInput;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.math.Vector3f;
-import com.jme3.post.FilterPostProcessor;
-import com.jme3.scene.Geometry;
 
 import java.util.Vector;
 
 public class MyApplication extends SimpleApplication {
     // BALL CONFIGS
     protected static final float shoot_distance = 3.0f;
-    protected static final float shoot_speed = 25.0f;
-    protected static final float ball_weight = 2.0f;
+    protected static final float shoot_speed = 30.0f;
 
     // CAMERA CONFIGS
     protected static final Vector3f cam_pos = new Vector3f(0, 8f, 14f);
@@ -32,37 +25,26 @@ public class MyApplication extends SimpleApplication {
 
     private BulletAppState bulletAppState;
 
-    private Vector<Geometry> walls = new Vector<Geometry>();
-    private Vector<Geometry> balls = new Vector<Geometry>();
+    private Vector<Wall> walls = new Vector<Wall>();
+    private Vector<Ball> balls = new Vector<Ball>();
 
-    private AmbientLight ambientLight;
-    private DirectionalLight directionalLight;
-    private DirectionalLightShadowFilter dlsFilter;
-
+    private MyCollisionListener collisionListener;
     private MyActionListener actionListener;
     private Creator creator;
     private Enlighter enlighter;
 
     // GETTERS
 
-    public AmbientLight getAmbientLight() {
-        return ambientLight;
-    }
-
-    public DirectionalLight getDirectionalLight() {
-        return directionalLight;
-    }
-
-    public DirectionalLightShadowFilter getDlsFilter() {
-        return dlsFilter;
-    }
-
-    public Vector<Geometry> getWalls() {
+    public Vector<Wall> getWalls() {
         return walls;
     }
 
-    public Vector<Geometry> getBalls() {
+    public Vector<Ball> getBalls() {
         return balls;
+    }
+
+    public MyCollisionListener getCollisionListener() {
+        return collisionListener;
     }
 
     public MyActionListener getActionListener() {
@@ -80,15 +62,26 @@ public class MyApplication extends SimpleApplication {
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
 
-        creator = new Creator(assetManager);
-        enlighter = new Enlighter(assetManager);
-        actionListener = new MyActionListener(this);
+        collisionListener = new MyCollisionListener();
+        bulletAppState.getPhysicsSpace().addCollisionListener(collisionListener);
 
         initCam();
-        initLights();
-        initFilters();
-        initWalls();
+
+        actionListener = new MyActionListener(this);
         initMappings();
+
+        enlighter = new Enlighter(assetManager, rootNode, viewPort);
+        enlighter.createAll();
+
+        creator = new Creator(assetManager, bulletAppState, rootNode);
+        initWalls();
+    }
+
+    public void demo(float speed) {
+        Ball one = creator.createBall();
+        Ball two = creator.createBall();
+        one.launch(new Vector3f(-5.0f, 5.0f, -0.1f), new Vector3f(1.0f, 0.0f, 0.0f).mult(speed));
+        two.launch(new Vector3f(5.0f, 5.0f, 0.1f), new Vector3f(-1.0f, 0.0f, 0.0f).mult(speed));
     }
 
     public void initCam() {
@@ -97,21 +90,6 @@ public class MyApplication extends SimpleApplication {
         flyCam.setMoveSpeed(cam_speed);
     }
 
-    public void initLights() {
-        directionalLight = enlighter.constructDirectionalLight();
-        rootNode.addLight(directionalLight);
-
-        ambientLight = enlighter.constructAmbientLight();
-        rootNode.addLight(ambientLight);
-    }
-
-    public void initFilters() {
-        dlsFilter = enlighter.constructDlsFilter();
-        dlsFilter.setLight(directionalLight);
-        FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
-        fpp.addFilter(dlsFilter);
-        viewPort.addProcessor(fpp);
-    }
 
     public void initMappings() {
         addMapping("shoot", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
@@ -126,29 +104,17 @@ public class MyApplication extends SimpleApplication {
     }
 
     public void initWalls() {
-        newWall(new Vector3f(10f, 2f, 0.1f), new Vector3f(0f, 2f, 10f));
-        newWall(new Vector3f(10f, 2f, 0.1f), new Vector3f(0f, 2f, -10f));
-        newWall(new Vector3f(0.1f, 2f, 10f), new Vector3f(-10f, 2f, 0f));
-        newWall(new Vector3f(0.1f, 2f, 10f), new Vector3f(10f, 2f, 0f));
-        newWall(new Vector3f(5f, 0.1f, 5f), new Vector3f(0f, 2f, 0f));
-        newWall(new Vector3f(10f, 0.1f, 10f), new Vector3f(0f, 0f, 0f));
-    }
-
-    public void newWall(Vector3f dims, Vector3f pos) {
-        Geometry wallGeo = creator.createWallGeo(dims, pos);
-        rootNode.attachChild(wallGeo);
-        RigidBodyControl wallPhy = creator.extendPhys(wallGeo, 0.0f);
-        bulletAppState.getPhysicsSpace().add(wallPhy);
-        walls.add(wallGeo);
+        walls.add(creator.createWall(new Vector3f(10f, 2f, 0.1f), new Vector3f(0f, 2f, 10f)));
+        walls.add(creator.createWall(new Vector3f(10f, 2f, 0.1f), new Vector3f(0f, 2f, -10f)));
+        walls.add(creator.createWall(new Vector3f(0.1f, 2f, 10f), new Vector3f(-10f, 2f, 0f)));
+        walls.add(creator.createWall(new Vector3f(0.1f, 2f, 10f), new Vector3f(10f, 2f, 0f)));
+        walls.add(creator.createWall(new Vector3f(5f, 0.1f, 5f), new Vector3f(0f, 2f, 0f)));
+        walls.add(creator.createWall(new Vector3f(10f, 0.1f, 10f), new Vector3f(0f, 0f, 0f)));
     }
 
     public void newBall() {
-        Geometry ballGeo = creator.createBallGeo();
-        rootNode.attachChild(ballGeo);
-        ballGeo.setLocalTranslation(cam.getLocation().add(cam.getDirection().mult(shoot_distance)));
-        RigidBodyControl ballPhy = creator.extendPhys(ballGeo, ball_weight);
-        bulletAppState.getPhysicsSpace().add(ballPhy);
-        ballPhy.setLinearVelocity(cam.getDirection().mult(shoot_speed));
-        balls.add(ballGeo);
+        Ball ball = creator.createBall();
+        ball.launch(cam.getLocation().add(cam.getDirection().mult(shoot_distance)), cam.getDirection().mult(shoot_speed));
+        balls.add(ball);
     }
 }
