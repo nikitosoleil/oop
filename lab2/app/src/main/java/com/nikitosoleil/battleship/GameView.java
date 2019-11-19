@@ -21,9 +21,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         drawer = new Drawer(this, getHolder());
         game = new Game(drawer);
         inputManager = new InputManager(drawer, game);
-
-        drawer.update(game.getBotBoard(), false, "YOUR TURN");
-
     }
 
     @Override
@@ -35,15 +32,13 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         drawer.initialize(this, holder);
-        drawer.draw();
+        drawer.draw(game.getBotBoard(), false, "YOUR TURN");
         inputManager = new InputManager(drawer, game);
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        drawer.initialize(this, holder);
-        drawer.draw();
-        inputManager = new InputManager(drawer, game);
+        
     }
 
     @Override

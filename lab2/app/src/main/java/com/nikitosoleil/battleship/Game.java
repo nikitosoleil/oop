@@ -55,17 +55,18 @@ public class Game {
         }
         if (botBoard.theEnd()) {
             updateView(botBoard, true, "YOU WON", delay);
+            updateView(playerBoard, true, "YOU WON", delay);
             init();
         } else if (playerBoard.theEnd()) {
             updateView(playerBoard, true, "BOT WON", delay);
+            updateView(botBoard, true, "BOT WON", delay);
             init();
         }
         updateView(botBoard, false, "YOUR TURN", 0);
     }
 
     public void updateView(Board board, boolean permission, String topText, long delay) {
-        drawer.update(board, permission, topText);
-        drawer.draw();
+        drawer.draw(board, permission, topText);
         freeze(delay);
     }
 

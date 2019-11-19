@@ -22,16 +22,14 @@ public class InputManager {
         Logger.log("onTouch: " + x + " " + y);
         final int i = getIndex(drawer.topLeft.x, drawer.bottomRight.x, Game.n, x);
         final int j = getIndex(drawer.topLeft.y, drawer.bottomRight.y, Game.n, y);
-        if (i >= 0 && j >= 0) {
-            if (!gameThread.isAlive()) {
-                Logger.log("action: " + i + " " + j);
-                gameThread = new Thread() {
-                    public void run() {
-                        game.playerMove(i, j);
-                    }
-                };
-                gameThread.start();
-            }
+        if (i >= 0 && j >= 0 && !gameThread.isAlive()) {
+            Logger.log("action: " + i + " " + j);
+            gameThread = new Thread() {
+                public void run() {
+                    game.playerMove(i, j);
+                }
+            };
+            gameThread.start();
         } else {
             game.animationThread.interrupt();
         }

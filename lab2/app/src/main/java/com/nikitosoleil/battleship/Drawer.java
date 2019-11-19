@@ -13,11 +13,8 @@ public class Drawer {
     static final float fontSize = 96;
     float length, step;
     float lineWidth = 10;
-    Pair<Float> topLeft, bottomRight, topTextCorner, bottomTextCorner;
+    Pair<Float> topLeft, bottomRight, topTextCorner;
     SurfaceHolder holder;
-    Board board;
-    boolean permission;
-    String topText;
 
     public Drawer(GameView gameView, SurfaceHolder holder) {
         initialize(gameView, holder);
@@ -33,29 +30,22 @@ public class Drawer {
         bottomRight = new Pair<Float>(width - topLeft.x, height - topLeft.y);
 
         topTextCorner = new Pair<Float>(margin, topLeft.y / 2 + fontSize / 2);
-        bottomTextCorner = new Pair<Float>(margin, height - margin);
     }
 
-    public void update(Board board, boolean permission, String topText) {
-        this.board = board;
-        this.permission = permission;
-        this.topText = topText;
+    public void draw(Board board, boolean permission, String topText) {
+        Canvas canvas = holder.lockCanvas();
+        draw(canvas, board, permission, topText);
+        holder.unlockCanvasAndPost(canvas);
     }
 
-    public void draw() {
-        Canvas c = holder.lockCanvas();
-        draw(c);
-        holder.unlockCanvasAndPost(c);
-    }
-
-    private void draw(Canvas canvas) {
+    private void draw(Canvas canvas, Board board, boolean permission, String topText) {
         canvas.drawColor(Color.BLACK);
-        drawText(canvas);
-        drawCells(canvas);
+        drawText(canvas, topText);
+        drawCells(canvas, board, permission);
         drawGrid(canvas);
     }
 
-    private void drawText(Canvas canvas) {
+    private void drawText(Canvas canvas, String topText) {
         Paint textPaint = new Paint();
         textPaint.setColor(Color.WHITE);
         textPaint.setStyle(Paint.Style.FILL);
@@ -64,12 +54,12 @@ public class Drawer {
         canvas.drawText(topText, topTextCorner.x, topTextCorner.y, textPaint);
     }
 
-    private void drawCells(Canvas canvas) {
+    private void drawCells(Canvas canvas, Board board, boolean permission) {
         Paint cellPaint = new Paint();
 
         for (int i = 0; i < Game.n; ++i) {
             for (int j = 0; j < Game.n; ++j) {
-                cellPaint.setColor(getColor(board.getState(i, j)));
+                cellPaint.setColor(getColor(board.getState(i, j), permission));
 
                 canvas.drawRect(topLeft.x + i * step,
                         topLeft.y + j * step,
@@ -91,7 +81,7 @@ public class Drawer {
         }
     }
 
-    private int getColor(Board.CellState cellState) {
+    private int getColor(Board.CellState cellState, boolean permission) {
         if (cellState == Board.CellState.TRIED)
             return Color.GRAY;
         else if (cellState == Board.CellState.FOUND)
