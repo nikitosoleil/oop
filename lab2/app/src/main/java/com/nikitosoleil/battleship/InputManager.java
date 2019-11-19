@@ -1,12 +1,12 @@
 package com.nikitosoleil.battleship;
 
 public class InputManager {
-    private BoardView boardView;
-    private Board board;
+    private Drawer drawer;
+    private Game game;
 
-    public InputManager(BoardView boardView, Board board) {
-        this.boardView = boardView;
-        this.board = board;
+    public InputManager(Drawer drawer, Game game) {
+        this.drawer = drawer;
+        this.game = game;
     }
 
     private static int getIndex(float start, float end, int count, float x) {
@@ -18,11 +18,11 @@ public class InputManager {
 
     public void onTouch(float x, float y) {
         Logger.log("onTouch: " + x + " " + y);
-        int i = getIndex(boardView.topLeft.x, boardView.bottomRight.x, board.n, x);
-        int j = getIndex(boardView.topLeft.y, boardView.bottomRight.y, board.n, y);
+        int i = getIndex(drawer.topLeft.x, drawer.bottomRight.x, Game.n, x);
+        int j = getIndex(drawer.topLeft.y, drawer.bottomRight.y, Game.n, y);
         if (i >= 0 && j >= 0) {
             Logger.log("action: " + i + " " + j);
-            board.action(i, j);
+            game.playerMove(i, j);
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.nikitosoleil.battleship;
 
 import android.content.Context;
-import android.graphics.*;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.SurfaceHolder;
@@ -9,8 +8,8 @@ import android.view.SurfaceHolder;
 
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     SurfaceHolder holder;
-    Board board;
-    BoardView boardView;
+    Game game;
+    Drawer drawer;
     InputManager inputManager;
 
     public GameView(Context context) {
@@ -19,41 +18,34 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         holder = getHolder();
         holder.addCallback(this);
 
-        board = new Board(10);
+        drawer = new Drawer(this, getHolder());
+        game = new Game(drawer);
+        inputManager = new InputManager(drawer, game);
+
+        drawer.update(game.getBotBoard(), false, "YOUR TURN");
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        inputManager.onTouch(event.getX(), event.getY());
-        draw();
+        Logger.log(String.format("Event occured: %s, %s", event, event.getAction()));
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            inputManager.onTouch(event.getX(), event.getY());
+        }
         return super.onTouchEvent(event);
-    }
-
-
-    public void draw() {
-        Canvas c = holder.lockCanvas();
-        draw(c);
-        holder.unlockCanvasAndPost(c);
-    }
-
-    @Override
-    public void draw(Canvas canvas) {
-        super.draw(canvas);
-        boardView.draw(canvas);
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        boardView = new BoardView(this, board);
-        inputManager = new InputManager(boardView, board);
-        draw();
+        drawer.initialize(this, holder);
+        drawer.draw();
+        inputManager = new InputManager(drawer, game);
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        boardView = new BoardView(this, board);
-        inputManager = new InputManager(boardView, board);
-        draw();
+        drawer.initialize(this, holder);
+        drawer.draw();
+        inputManager = new InputManager(drawer, game);
     }
 
     @Override

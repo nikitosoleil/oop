@@ -1,9 +1,9 @@
 package com.nikitosoleil.battleship;
 
-public class Coordinates {
-    public float x, y;
+public class Pair<T> {
+    public T x, y;
 
-    Coordinates(float x, float y) {
+    Pair(T x, T y) {
         this.x = x;
         this.y = y;
     }
