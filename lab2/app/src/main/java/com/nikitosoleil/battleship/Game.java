@@ -40,7 +40,7 @@ public class Game {
 
                 Pair<Integer> botMove;
                 while (!playerBoard.theEnd()) {
-                    updateView(playerBoard, true, "BOT'S TURN", delay);
+                    updateView(playerBoard, true, "BOT TURN", delay);
 
                     botMove = bot.move(playerBoard);
                     if (playerBoard.getState(botMove) == Board.CellState.PRESENT)
@@ -50,7 +50,7 @@ public class Game {
                         break;
                     }
                 }
-                updateView(playerBoard, true, "BOT'S TURN", delay);
+                updateView(playerBoard, true, "BOT TURN", delay);
             }
         }
         if (botBoard.theEnd()) {

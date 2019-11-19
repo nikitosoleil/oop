@@ -50,36 +50,44 @@ public class Drawer {
 
     private void draw(Canvas canvas) {
         canvas.drawColor(Color.BLACK);
+        drawText(canvas);
+        drawCells(canvas);
+        drawGrid(canvas);
+    }
 
+    private void drawText(Canvas canvas) {
         Paint textPaint = new Paint();
         textPaint.setColor(Color.WHITE);
         textPaint.setStyle(Paint.Style.FILL);
         textPaint.setTextSize(fontSize);
         textPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
-        System.out.println(topTextCorner.x + " " + topTextCorner.y);
         canvas.drawText(topText, topTextCorner.x, topTextCorner.y, textPaint);
+    }
 
-        Paint linePaint = new Paint();
-        linePaint.setColor(Color.BLACK);
-        linePaint.setStrokeWidth(lineWidth);
-
-        for (int i = 0; i <= Game.n; ++i) {
-            canvas.drawLine(topLeft.x + i * step, topLeft.y, bottomRight.x + i * step, bottomRight.y, linePaint);
-            canvas.drawLine(topLeft.x, topLeft.y + i * step, bottomRight.x, bottomRight.y + i * step, linePaint);
-        }
-
+    private void drawCells(Canvas canvas) {
         Paint cellPaint = new Paint();
 
         for (int i = 0; i < Game.n; ++i) {
             for (int j = 0; j < Game.n; ++j) {
                 cellPaint.setColor(getColor(board.getState(i, j)));
 
-                canvas.drawRect(topLeft.x + i * step + lineWidth / 2,
-                        topLeft.y + j * step + lineWidth / 2,
-                        topLeft.x + (i + 1) * step - lineWidth / 2,
-                        topLeft.y + (j + 1) * step - lineWidth / 2,
+                canvas.drawRect(topLeft.x + i * step,
+                        topLeft.y + j * step,
+                        topLeft.x + (i + 1) * step,
+                        topLeft.y + (j + 1) * step,
                         cellPaint);
             }
+        }
+    }
+
+    private void drawGrid(Canvas canvas) {
+        Paint linePaint = new Paint();
+        linePaint.setColor(Color.BLACK);
+        linePaint.setStrokeWidth(lineWidth);
+
+        for (int i = 0; i <= Game.n; ++i) {
+            canvas.drawLine(topLeft.x + i * step, topLeft.y, topLeft.x + i * step, bottomRight.y, linePaint);
+            canvas.drawLine(topLeft.x, topLeft.y + i * step, bottomRight.x, topLeft.y + i * step, linePaint);
         }
     }
 
