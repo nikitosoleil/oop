@@ -7,6 +7,7 @@ public class Game {
     private Bot bot;
     private Board playerBoard, botBoard;
     private final long delay = 2000;
+    public Thread animationThread;
 
     public Game(Drawer drawer) {
         this.drawer = drawer;
@@ -72,11 +73,20 @@ public class Game {
         playerMove(new Pair<Integer>(x, y));
     }
 
-    private void freeze(long n) {
+    private void freeze(final long n) {
+        animationThread = new Thread() {
+            public void run() {
+                try {
+                    Thread.sleep(n);
+                } catch (InterruptedException e) {
+                    Logger.log("Animation interrupted");
+                }
+            }
+        };
+        animationThread.start();
         try {
-            Thread.sleep(n);
+            animationThread.join();
         } catch (InterruptedException e) {
-
         }
     }
 

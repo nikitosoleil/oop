@@ -23,14 +23,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         inputManager = new InputManager(drawer, game);
 
         drawer.update(game.getBotBoard(), false, "YOUR TURN");
+
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Logger.log(String.format("Event occured: %s, %s", event, event.getAction()));
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            inputManager.onTouch(event.getX(), event.getY());
-        }
+        inputManager.onTouch(event.getX(), event.getY());
         return super.onTouchEvent(event);
     }
 

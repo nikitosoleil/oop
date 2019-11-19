@@ -34,8 +34,6 @@ public class Drawer {
 
         topTextCorner = new Pair<Float>(margin, topLeft.y / 2 + fontSize / 2);
         bottomTextCorner = new Pair<Float>(margin, height - margin);
-
-        Logger.log(String.format("boardView initialized, length:    %s, step: %s, topLeft.x: %s, topLeft.y: %s, bottomRight.x: %s, bottomRight.y: %s", length, step, topLeft.x, topLeft.y, bottomRight.x, bottomRight.y));
     }
 
     public void update(Board board, boolean permission, String topText) {
