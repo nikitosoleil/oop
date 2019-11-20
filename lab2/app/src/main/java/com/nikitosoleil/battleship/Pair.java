@@ -7,4 +7,13 @@ public class Pair<T> {
         this.x = x;
         this.y = y;
     }
+
+    public Pair<T> clone() {
+        return new Pair<T>(x, y);
+    }
+
+    public boolean equals(Pair<T> other) {
+        return x == other.x && y == other.y;
+    }
+
 }

@@ -1,7 +1,7 @@
 package com.nikitosoleil.battleship;
 
 public class Game {
-    public static final int n = 8;
+    public static final int n = 10;
     private Drawer drawer;
     private Player player;
     private Bot bot;
@@ -11,6 +11,7 @@ public class Game {
 
     public Game(Drawer drawer) {
         this.drawer = drawer;
+        animationThread = new Thread();
         init();
     }
 
@@ -34,6 +35,7 @@ public class Game {
         if (botBoard.moveValid(playerMove) && !botBoard.theEnd()) {
             if (botBoard.getState(playerMove) == Board.CellState.PRESENT) {
                 botBoard.setState(playerMove, Board.CellState.FOUND);
+                botBoard.updateShip(playerMove);
             } else if (!botBoard.theEnd()) {
                 botBoard.setState(playerMove, Board.CellState.TRIED);
                 updateView(botBoard, false, "YOUR TURN", delay);
@@ -43,9 +45,10 @@ public class Game {
                     updateView(playerBoard, true, "BOT TURN", delay);
 
                     botMove = bot.move(playerBoard);
-                    if (playerBoard.getState(botMove) == Board.CellState.PRESENT)
+                    if (playerBoard.getState(botMove) == Board.CellState.PRESENT) {
                         playerBoard.setState(botMove, Board.CellState.FOUND);
-                    else {
+                        playerBoard.updateShip(botMove);
+                    } else {
                         playerBoard.setState(botMove, Board.CellState.TRIED);
                         break;
                     }
