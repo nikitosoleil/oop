@@ -2,7 +2,7 @@ package com.nikitosoleil.battleship;
 
 public class Player implements Rival {
     public Board initial() {
-        Board board = new Board(Game.n);
+        Board board = new Board();
 
         // TODO: implement
         board.randomize();
@@ -11,7 +11,7 @@ public class Player implements Rival {
         return board;
     }
 
-    public Pair<Integer> move(Board board) {
+    public Pair<Integer> nextMove(Board board) {
         // NOTE: not used in current implementation
         return new Pair<Integer>(-1, -1);
     }

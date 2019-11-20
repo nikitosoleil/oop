@@ -44,7 +44,9 @@ public class Game {
                 while (!playerBoard.theEnd()) {
                     updateView(playerBoard, true, "BOT TURN", delay);
 
-                    botMove = bot.move(playerBoard);
+                    Board hiddenPlayerBoard = playerBoard.getHidden();
+                    botMove = bot.nextMove(hiddenPlayerBoard);
+
                     if (playerBoard.getState(botMove) == Board.CellState.PRESENT) {
                         playerBoard.setState(botMove, Board.CellState.FOUND);
                         playerBoard.updateShip(botMove);

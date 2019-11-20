@@ -19,8 +19,8 @@ public class Board {
         return cs == CellState.PRESENT || cs == CellState.FOUND || cs == CellState.DESTROYED;
     }
 
-    public final int[] ships = {4, 3, 2, 1};
-    public final List<Pair<Integer>> directions = new ArrayList<Pair<Integer>>(Arrays.asList(
+    public static final int[] ships = {4, 3, 2, 1};
+    public static final List<Pair<Integer>> directions = new ArrayList<Pair<Integer>>(Arrays.asList(
             new Pair<Integer>(1, 0),
             new Pair<Integer>(-1, 0),
             new Pair<Integer>(0, 1),
@@ -28,8 +28,8 @@ public class Board {
 
     private CellState[][] state;
 
-    public Board(int n) {
-        state = new CellState[n][n];
+    public Board() {
+        state = new CellState[Game.n][Game.n];
         for (CellState[] row : state)
             Arrays.fill(row, CellState.EMPTY);
     }
@@ -39,32 +39,32 @@ public class Board {
         return state[x][y];
     }
 
-    public CellState getState(Pair<Integer> coords) {
-        return getState(coords.x, coords.y);
+    public CellState getState(Pair<Integer> point) {
+        return getState(point.x, point.y);
     }
 
     public void setState(int x, int y, CellState value) {
         state[x][y] = value;
     }
 
-    public void setState(Pair<Integer> coords, CellState value) {
-        setState(coords.x, coords.y, value);
+    public void setState(Pair<Integer> point, CellState value) {
+        setState(point.x, point.y, value);
     }
 
-    public boolean inBound(int x, int y) {
+    public static boolean inBound(int x, int y) {
         return 0 <= x && x < Game.n && 0 <= y && y < Game.n;
     }
 
-    public boolean inBound(Pair<Integer> coords) {
-        return inBound(coords.x, coords.y);
+    public static boolean inBound(Pair<Integer> point) {
+        return inBound(point.x, point.y);
     }
 
     public boolean moveValid(int x, int y) {
         return state[x][y] == CellState.EMPTY || state[x][y] == CellState.PRESENT;
     }
 
-    public boolean moveValid(Pair<Integer> coords) {
-        return moveValid(coords.x, coords.y);
+    public boolean moveValid(Pair<Integer> point) {
+        return moveValid(point.x, point.y);
     }
 
     public boolean stateValid() {
@@ -74,7 +74,7 @@ public class Board {
     private boolean itsFreeRealEstate(Pair<Integer> U, Pair<Integer> V) {
         for (int i = Math.max(0, U.x - 1); i <= Math.min(Game.n - 1, V.x + 1); ++i)
             for (int j = Math.max(0, U.y - 1); j <= Math.min(Game.n - 1, V.y + 1); ++j)
-                if (state[i][j] == CellState.PRESENT)
+                if (getState(i, j) == CellState.PRESENT)
                     return false;
         return true;
     }
@@ -98,8 +98,7 @@ public class Board {
                 }
                 for (int i = U.x; i <= V.x; ++i)
                     for (int j = U.y; j <= V.y; ++j)
-                        state[i][j] = CellState.PRESENT;
-                System.out.println(U.x + " " + U.y + " " + V.x + " " + V.y);
+                        setState(i, j, CellState.PRESENT);
             }
         }
     }
@@ -132,10 +131,22 @@ public class Board {
     public boolean theEnd() {
         for (int i = 0; i < Game.n; ++i) {
             for (int j = 0; j < Game.n; ++j) {
-                if (state[i][j] == CellState.PRESENT)
+                if (getState(i, j) == CellState.PRESENT)
                     return false;
             }
         }
         return true;
+    }
+
+    public Board getHidden() {
+        Board hidden = new Board();
+        for (int i = 0; i < Game.n; ++i)
+            for (int j = 0; j < Game.n; ++j) {
+                if (getState(i, j) != CellState.PRESENT)
+                    hidden.setState(i, j, getState(i, j));
+                else
+                    hidden.setState(i, j, CellState.EMPTY);
+            }
+        return hidden;
     }
 }
