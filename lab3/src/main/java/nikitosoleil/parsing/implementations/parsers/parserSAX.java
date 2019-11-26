@@ -1,4 +1,4 @@
-package nikitosoleil.parsing.realisations.parsers;
+package nikitosoleil.parsing.implementations.parsers;
 
 import nikitosoleil.parsing.interfaces.Handler;
 import nikitosoleil.parsing.interfaces.Parser;

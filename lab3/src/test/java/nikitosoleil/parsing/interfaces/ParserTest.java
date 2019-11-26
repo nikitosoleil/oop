@@ -1,11 +1,10 @@
 package nikitosoleil.parsing.interfaces;
 
-import javafx.util.Pair;
 import nikitosoleil.concert.Dance;
-import nikitosoleil.parsing.realisations.handlers.DanceHandler;
-import nikitosoleil.parsing.realisations.parsers.ParserDOM;
-import nikitosoleil.parsing.realisations.parsers.parserSAX;
-import nikitosoleil.parsing.realisations.parsers.parserStAX;
+import nikitosoleil.parsing.implementations.handlers.DanceHandler;
+import nikitosoleil.parsing.implementations.parsers.ParserDOM;
+import nikitosoleil.parsing.implementations.parsers.parserSAX;
+import nikitosoleil.parsing.implementations.parsers.parserStAX;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +25,7 @@ public class ParserTest {
             "resources/example_unclosed.xml",
             "resources/example_0_dancers.xml");
 
-    private Pair<String, String> correctRepresentation = new Pair<>(
+    private Pair<String> correctRepresentation = new Pair<>(
             "resources/example_3_dancers.xml",
             "Id: 000\n" +
                     "Type: folk\n" +
@@ -118,19 +117,19 @@ public class ParserTest {
 
     @Test
     public void testParserRepresentationDOM() {
-        Assert.assertEquals(correctRepresentation.getValue(),
-                parserDOM.parse(correctRepresentation.getKey(), xsdPath).toString());
+        Assert.assertEquals(correctRepresentation.y,
+                parserDOM.parse(correctRepresentation.x, xsdPath).toString());
     }
 
     @Test
     public void testParserRepresentationSAX() {
-        Assert.assertEquals(correctRepresentation.getValue(),
-                parserSax.parse(correctRepresentation.getKey(), xsdPath).toString());
+        Assert.assertEquals(correctRepresentation.y,
+                parserSax.parse(correctRepresentation.x, xsdPath).toString());
     }
 
     @Test
     public void testParserRepresentationStAX() {
-        Assert.assertEquals(correctRepresentation.getValue(),
-                parserStAX.parse(correctRepresentation.getKey(), xsdPath).toString());
+        Assert.assertEquals(correctRepresentation.y,
+                parserStAX.parse(correctRepresentation.x, xsdPath).toString());
     }
 }

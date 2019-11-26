@@ -1,10 +1,10 @@
 package nikitosoleil;
 
 import nikitosoleil.concert.Dance;
-import nikitosoleil.parsing.realisations.handlers.DanceHandler;
-import nikitosoleil.parsing.realisations.parsers.ParserDOM;
-import nikitosoleil.parsing.realisations.parsers.parserSAX;
-import nikitosoleil.parsing.realisations.parsers.parserStAX;
+import nikitosoleil.parsing.implementations.handlers.DanceHandler;
+import nikitosoleil.parsing.implementations.parsers.ParserDOM;
+import nikitosoleil.parsing.implementations.parsers.parserSAX;
+import nikitosoleil.parsing.implementations.parsers.parserStAX;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
