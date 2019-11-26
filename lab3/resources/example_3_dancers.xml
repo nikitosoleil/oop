@@ -1,0 +1,24 @@
+<dance id="000">
+    <type>folk</type>
+    <scene>street</scene>
+    <number-of-dancers>group</number-of-dancers>
+    <music>live_music</music>
+    <dancers-root>
+        <dancer>
+            <name>Igor</name>
+            <age>8</age>
+            <experience>1</experience>
+        </dancer>
+        <dancer>
+            <name>Nikita</name>
+            <age>19</age>
+            <experience>3</experience>
+        </dancer>
+        <dancer>
+            <name>Valera</name>
+            <age>55</age>
+            <experience>1</experience>
+        </dancer>
+    </dancers-root>
+    <number>1</number>
+</dance>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:simpleType name="type">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ballet"/>
+            <xs:enumeration value="folk"/>
+            <xs:enumeration value="pop"/>
+            <xs:enumeration value="oriental "/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="scene">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="concert_hall"/>
+            <xs:enumeration value="street"/>
+            <xs:enumeration value="TV_show"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="music">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="soundtrack"/>
+            <xs:enumeration value="live_music"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="dancer">
+        <xs:sequence>
+            <xs:element name="name" type="xs:string" maxOccurs="1" minOccurs="1"/>
+            <xs:element name="age" type="xs:integer" maxOccurs="1"/>
+            <xs:element name="experience" type="xs:integer" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="number-of-dancers">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="solo"/>
+            <xs:enumeration value="pair"/>
+            <xs:enumeration value="group"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+
+    <xs:element name="dance">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="type" type="type" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="scene" type="scene" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="number-of-dancers" type="number-of-dancers" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="music" type="music" minOccurs="1" maxOccurs="1"/>
+                <xs:element name="dancers-root">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="dancer" type="dancer" minOccurs="1" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="number" type="xs:integer" minOccurs="1" maxOccurs="1"/>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

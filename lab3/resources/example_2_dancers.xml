@@ -1,0 +1,19 @@
+<dance id="123">
+    <type>folk</type>
+    <scene>street</scene>
+    <number-of-dancers>pair</number-of-dancers>
+    <music>live_music</music>
+    <dancers-root>
+        <dancer>
+            <name>Sasha</name>
+            <age>8</age>
+            <experience>1</experience>
+        </dancer>
+        <dancer>
+            <name>Tania</name>
+            <age>19</age>
+            <experience>3</experience>
+        </dancer>
+    </dancers-root>
+    <number>12</number>
+</dance>
