@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InputManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">lab2$Tests_in__com_nikitosoleil_battleship_.exec</a> &gt; <a href="index.source.html" class="el_package">com.nikitosoleil.battleship</a> &gt; <span class="el_source">InputManager.java</span></div><h1>InputManager.java</h1><pre class="source lang-java linenums">package com.nikitosoleil.battleship;
+
+public class InputManager {
+    private Drawer drawer;
+    private Game game;
+    private Thread gameThread;
+
+<span class="nc" id="L8">    public InputManager(Drawer drawer, Game game) {</span>
+<span class="nc" id="L9">        this.drawer = drawer;</span>
+<span class="nc" id="L10">        this.game = game;</span>
+<span class="nc" id="L11">        gameThread = new Thread();</span>
+<span class="nc" id="L12">    }</span>
+
+    public static int getIndex(float start, float end, int count, float x) {
+<span class="fc bfc" id="L15" title="All 4 branches covered.">        if (x &gt; start &amp;&amp; x &lt; end)</span>
+<span class="fc" id="L16">            return (int) Math.floor((x - start) * count / (end - start));</span>
+        else
+<span class="fc" id="L18">            return -1;</span>
+    }
+
+    public void onTouch(float x, float y) {
+<span class="nc" id="L22">        Logger.log(&quot;onTouch: &quot; + x + &quot; &quot; + y);</span>
+<span class="nc" id="L23">        final int i = getIndex(drawer.topLeft.x, drawer.bottomRight.x, Game.n, x);</span>
+<span class="nc" id="L24">        final int j = getIndex(drawer.topLeft.y, drawer.bottomRight.y, Game.n, y);</span>
+<span class="nc bnc" id="L25" title="All 6 branches missed.">        if (i &gt;= 0 &amp;&amp; j &gt;= 0 &amp;&amp; !gameThread.isAlive()) {</span>
+<span class="nc" id="L26">            Logger.log(&quot;action: &quot; + i + &quot; &quot; + j);</span>
+<span class="nc" id="L27">            gameThread = new Thread() {</span>
+                public void run() {
+<span class="nc" id="L29">                    game.playerMove(i, j);</span>
+<span class="nc" id="L30">                }</span>
+            };
+<span class="nc" id="L32">            gameThread.start();</span>
+        } else {
+<span class="nc" id="L34">            game.animationThread.interrupt();</span>
+        }
+<span class="nc" id="L36">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

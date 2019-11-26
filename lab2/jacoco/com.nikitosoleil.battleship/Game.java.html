@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Game.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">lab2$Tests_in__com_nikitosoleil_battleship_.exec</a> &gt; <a href="index.source.html" class="el_package">com.nikitosoleil.battleship</a> &gt; <span class="el_source">Game.java</span></div><h1>Game.java</h1><pre class="source lang-java linenums">package com.nikitosoleil.battleship;
+
+public class Game {
+    public static final int n = 10;
+    private Drawer drawer;
+    private Rival bot;
+    private Board playerBoard, botBoard;
+<span class="fc" id="L8">    public long delay = 2000;</span>
+<span class="fc" id="L9">    public long finalDelay = 5000;</span>
+    public Thread animationThread;
+
+<span class="fc" id="L12">    public Game(Drawer drawer, Rival bot) {</span>
+<span class="fc" id="L13">        this.drawer = drawer;</span>
+<span class="fc" id="L14">        animationThread = new Thread();</span>
+<span class="fc" id="L15">        this.bot = bot;</span>
+<span class="fc" id="L16">        init();</span>
+<span class="fc" id="L17">    }</span>
+
+    public void init() {
+<span class="fc" id="L20">        playerBoard = Board.random();</span>
+<span class="fc" id="L21">        botBoard = Board.random();</span>
+<span class="fc" id="L22">        bot.init();</span>
+<span class="fc" id="L23">    }</span>
+
+    public Board getPlayerBoard() {
+<span class="fc" id="L26">        return playerBoard;</span>
+    }
+
+    public Board getBotBoard() {
+<span class="fc" id="L30">        return botBoard;</span>
+    }
+
+    public void setPlayerBoard(Board board) {
+<span class="fc" id="L34">        playerBoard = board;</span>
+<span class="fc" id="L35">    }</span>
+
+    public void setBotBoard(Board board) {
+<span class="fc" id="L38">        botBoard = board;</span>
+<span class="fc" id="L39">    }</span>
+
+    private boolean step(Board board, Coordinates&lt;Integer&gt; move) {
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        if (board.getState(move) == Board.CellState.PRESENT) {</span>
+<span class="fc" id="L43">            board.setState(move, Board.CellState.FOUND);</span>
+<span class="fc" id="L44">            board.updateShip(move);</span>
+<span class="pc bpc" id="L45" title="1 of 2 branches missed.">        } else if (!board.theEnd()) {</span>
+<span class="fc" id="L46">            board.setState(move, Board.CellState.TRIED);</span>
+<span class="fc" id="L47">            return true;</span>
+        }
+<span class="fc" id="L49">        return false;</span>
+    }
+
+
+    public void playerMove(Coordinates&lt;Integer&gt; playerMove) {
+<span class="fc" id="L54">        Logger.log(String.format(&quot;Got player move: %s, %s&quot;, playerMove.x, playerMove.y));</span>
+<span class="pc bpc" id="L55" title="2 of 4 branches missed.">        if (botBoard.moveValid(playerMove) &amp;&amp; !botBoard.theEnd()) {</span>
+<span class="fc" id="L56">            boolean botTurn = step(botBoard, playerMove);</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">            if (botTurn) {</span>
+<span class="fc" id="L58">                updateView(botBoard, false, &quot;YOUR TURN&quot;, delay);</span>
+
+                Coordinates&lt;Integer&gt; botMove;
+<span class="fc bfc" id="L61" title="All 2 branches covered.">                while (!playerBoard.theEnd()) {</span>
+<span class="fc" id="L62">                    updateView(playerBoard, true, &quot;BOT TURN&quot;, delay);</span>
+
+<span class="fc" id="L64">                    Board hiddenPlayerBoard = playerBoard.getHidden();</span>
+<span class="fc" id="L65">                    botMove = bot.nextMove(hiddenPlayerBoard);</span>
+
+<span class="fc" id="L67">                    boolean playerTurn = step(playerBoard, botMove);</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">                    if (playerTurn)</span>
+<span class="fc" id="L69">                        break;</span>
+<span class="fc" id="L70">                }</span>
+<span class="fc" id="L71">                updateView(playerBoard, true, &quot;BOT TURN&quot;, delay);</span>
+            }
+        }
+<span class="fc bfc" id="L74" title="All 2 branches covered.">        if (botBoard.theEnd()) {</span>
+<span class="fc" id="L75">            updateView(botBoard, true, &quot;YOU WON&quot;, finalDelay);</span>
+<span class="fc" id="L76">            updateView(playerBoard, true, &quot;YOU WON&quot;, finalDelay);</span>
+<span class="fc" id="L77">            init();</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">        } else if (playerBoard.theEnd()) {</span>
+<span class="fc" id="L79">            updateView(playerBoard, true, &quot;BOT WON&quot;, finalDelay);</span>
+<span class="fc" id="L80">            updateView(botBoard, true, &quot;BOT WON&quot;, finalDelay);</span>
+<span class="fc" id="L81">            init();</span>
+        }
+<span class="fc" id="L83">        updateView(botBoard, false, &quot;YOUR TURN&quot;, 0);</span>
+<span class="fc" id="L84">    }</span>
+
+    public void playerMove(int x, int y) {
+<span class="fc" id="L87">        playerMove(new Coordinates&lt;Integer&gt;(x, y));</span>
+<span class="fc" id="L88">    }</span>
+
+    public void updateView(Board board, boolean permission, String topText, long delay) {
+<span class="pc bpc" id="L91" title="1 of 2 branches missed.">        if (drawer != null)</span>
+<span class="nc" id="L92">            drawer.draw(board, permission, topText);</span>
+<span class="fc" id="L93">        freeze(delay);</span>
+<span class="fc" id="L94">    }</span>
+
+    private void freeze(final long n) {
+<span class="fc" id="L97">        animationThread = new Thread() {</span>
+            public void run() {
+                try {
+<span class="fc" id="L100">                    Thread.sleep(n);</span>
+<span class="nc" id="L101">                } catch (InterruptedException e) {</span>
+<span class="nc" id="L102">                    Logger.log(&quot;Animation interrupted&quot;);</span>
+<span class="fc" id="L103">                }</span>
+<span class="fc" id="L104">            }</span>
+        };
+<span class="fc" id="L106">        animationThread.start();</span>
+        try {
+<span class="fc" id="L108">            animationThread.join();</span>
+<span class="nc" id="L109">        } catch (InterruptedException e) {</span>
+<span class="fc" id="L110">        }</span>
+<span class="fc" id="L111">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

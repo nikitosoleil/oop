@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Board.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">lab2$Tests_in__com_nikitosoleil_battleship_.exec</a> &gt; <a href="index.source.html" class="el_package">com.nikitosoleil.battleship</a> &gt; <span class="el_source">Board.java</span></div><h1>Board.java</h1><pre class="source lang-java linenums">package com.nikitosoleil.battleship;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+import java.lang.Math;
+
+public class Board {
+<span class="fc" id="L10">    public enum CellState {</span>
+<span class="fc" id="L11">        EMPTY, TRIED, PRESENT, FOUND, DESTROYED</span>
+    }
+
+    public static boolean isWater(CellState cs) {
+<span class="fc bfc" id="L15" title="All 4 branches covered.">        return cs == CellState.EMPTY || cs == CellState.TRIED;</span>
+    }
+
+    public static boolean isShip(CellState cs) {
+<span class="fc bfc" id="L19" title="All 6 branches covered.">        return cs == CellState.PRESENT || cs == CellState.FOUND || cs == CellState.DESTROYED;</span>
+    }
+
+<span class="fc" id="L22">    public static final int[] ships = {4, 3, 2, 1};</span>
+<span class="fc" id="L23">    public static final List&lt;Coordinates&lt;Integer&gt;&gt; directions = new ArrayList&lt;Coordinates&lt;Integer&gt;&gt;(Arrays.asList(</span>
+<span class="fc" id="L24">            new Coordinates&lt;Integer&gt;(1, 0),</span>
+<span class="fc" id="L25">            new Coordinates&lt;Integer&gt;(-1, 0),</span>
+<span class="fc" id="L26">            new Coordinates&lt;Integer&gt;(0, 1),</span>
+<span class="fc" id="L27">            new Coordinates&lt;Integer&gt;(0, -1)));</span>
+
+    private CellState[][] state;
+
+<span class="fc" id="L31">    public Board() {</span>
+<span class="fc" id="L32">        state = new CellState[Game.n][Game.n];</span>
+<span class="fc" id="L33">        init();</span>
+<span class="fc" id="L34">    }</span>
+
+    public void init() {
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        for (CellState[] row : state)</span>
+<span class="fc" id="L38">            Arrays.fill(row, CellState.EMPTY);</span>
+<span class="fc" id="L39">    }</span>
+
+    public static Board fromMask(int[][] mask) {
+<span class="fc" id="L42">        Board board = new Board();</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        for (int i = 0; i &lt; Game.n; ++i) {</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">            for (int j = 0; j &lt; Game.n; ++j) {</span>
+<span class="fc" id="L45">                Board.CellState state = Board.CellState.values()[mask[i][j]];</span>
+<span class="fc" id="L46">                board.setState(i, j, state);</span>
+            }
+        }
+<span class="fc" id="L49">        return board;</span>
+    }
+
+
+    public CellState getState(int x, int y) {
+<span class="fc" id="L54">        return state[x][y];</span>
+    }
+
+    public CellState getState(Coordinates&lt;Integer&gt; point) {
+<span class="fc" id="L58">        return getState(point.x, point.y);</span>
+    }
+
+    public void setState(int x, int y, CellState value) {
+<span class="fc" id="L62">        state[x][y] = value;</span>
+<span class="fc" id="L63">    }</span>
+
+    public void setState(Coordinates&lt;Integer&gt; point, CellState value) {
+<span class="fc" id="L66">        setState(point.x, point.y, value);</span>
+<span class="fc" id="L67">    }</span>
+
+    public static boolean inBound(int x, int y) {
+<span class="fc bfc" id="L70" title="All 8 branches covered.">        return 0 &lt;= x &amp;&amp; x &lt; Game.n &amp;&amp; 0 &lt;= y &amp;&amp; y &lt; Game.n;</span>
+    }
+
+    public static boolean inBound(Coordinates&lt;Integer&gt; point) {
+<span class="fc" id="L74">        return inBound(point.x, point.y);</span>
+    }
+
+    public boolean moveValid(int x, int y) {
+<span class="pc bpc" id="L78" title="1 of 2 branches missed.">        if (Board.inBound(x, y))</span>
+<span class="fc bfc" id="L79" title="All 4 branches covered.">            return state[x][y] == CellState.EMPTY || state[x][y] == CellState.PRESENT;</span>
+        else
+<span class="nc" id="L81">            return false;</span>
+    }
+
+    public boolean moveValid(Coordinates&lt;Integer&gt; point) {
+<span class="fc" id="L85">        return moveValid(point.x, point.y);</span>
+    }
+
+    public Board getHidden() {
+<span class="fc" id="L89">        Board hidden = new Board();</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        for (int i = 0; i &lt; Game.n; ++i)</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">            for (int j = 0; j &lt; Game.n; ++j) {</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">                if (getState(i, j) != CellState.PRESENT)</span>
+<span class="fc" id="L93">                    hidden.setState(i, j, getState(i, j));</span>
+                else
+<span class="fc" id="L95">                    hidden.setState(i, j, CellState.EMPTY);</span>
+            }
+<span class="fc" id="L97">        return hidden;</span>
+    }
+
+    public Board clone() {
+<span class="fc" id="L101">        Board newBoard = new Board();</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">        for (int i = 0; i &lt; Game.n; ++i)</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">            for (int j = 0; j &lt; Game.n; ++j)</span>
+<span class="fc" id="L104">                newBoard.setState(i, j, getState(i, j));</span>
+<span class="fc" id="L105">        return newBoard;</span>
+    }
+
+    void shipCoords(Coordinates&lt;Integer&gt; point, Coordinates&lt;Integer&gt; topLeft, Coordinates&lt;Integer&gt; bottomRight,
+                    boolean[][] visited) {
+<span class="fc" id="L110">        visited[point.x][point.y] = true;</span>
+<span class="fc" id="L111">        topLeft.x = Math.min(topLeft.x, point.x);</span>
+<span class="fc" id="L112">        topLeft.y = Math.min(topLeft.y, point.y);</span>
+<span class="fc" id="L113">        bottomRight.x = Math.max(bottomRight.x, point.x);</span>
+<span class="fc" id="L114">        bottomRight.y = Math.max(bottomRight.y, point.y);</span>
+
+<span class="fc bfc" id="L116" title="All 2 branches covered.">        for (Coordinates&lt;Integer&gt; direction : directions) {</span>
+<span class="fc" id="L117">            Coordinates&lt;Integer&gt; next = new Coordinates&lt;Integer&gt;(point.x + direction.x, point.y + direction.y);</span>
+<span class="fc bfc" id="L118" title="All 6 branches covered.">            if (inBound(next) &amp;&amp; !visited[next.x][next.y] &amp;&amp; isShip(getState(next)))</span>
+<span class="fc" id="L119">                shipCoords(next, topLeft, bottomRight, visited);</span>
+<span class="fc" id="L120">        }</span>
+<span class="fc" id="L121">    }</span>
+
+    private boolean itsFreeRealEstate(Coordinates&lt;Integer&gt; U, Coordinates&lt;Integer&gt; V, boolean itself) {
+<span class="fc bfc" id="L124" title="All 2 branches covered.">        for (int i = Math.max(0, U.x - 1); i &lt;= Math.min(Game.n - 1, V.x + 1); ++i)</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">            for (int j = Math.max(0, U.y - 1); j &lt;= Math.min(Game.n - 1, V.y + 1); ++j) {</span>
+<span class="fc bfc" id="L126" title="All 10 branches covered.">                if (!itself &amp;&amp; U.x &lt;= i &amp;&amp; i &lt;= V.x &amp;&amp; U.y &lt;= j &amp;&amp; j &lt;= V.y)</span>
+<span class="fc" id="L127">                    continue;</span>
+<span class="fc bfc" id="L128" title="All 2 branches covered.">                if (isShip(getState(i, j)))</span>
+<span class="fc" id="L129">                    return false;</span>
+            }
+<span class="fc" id="L131">        return true;</span>
+    }
+
+    public int stateInvalid() {
+<span class="fc" id="L135">        boolean[][] visited = new boolean[Game.n][Game.n];</span>
+<span class="fc" id="L136">        int[] shipsLeft = ships.clone();</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">        for (int i = 0; i &lt; Game.n; ++i) {</span>
+<span class="fc bfc" id="L138" title="All 2 branches covered.">            for (int j = 0; j &lt; Game.n; ++j) {</span>
+<span class="fc bfc" id="L139" title="All 4 branches covered.">                if (isShip((getState(i, j))) &amp;&amp; !visited[i][j]) {</span>
+<span class="fc" id="L140">                    Coordinates&lt;Integer&gt; topLeft = new Coordinates&lt;Integer&gt;(i, j);</span>
+<span class="fc" id="L141">                    Coordinates&lt;Integer&gt; bottomRight = new Coordinates&lt;Integer&gt;(i, j);</span>
+<span class="fc" id="L142">                    shipCoords(new Coordinates&lt;Integer&gt;(i, j), topLeft, bottomRight, visited);</span>
+
+<span class="fc" id="L144">                    int dimensions = 0, size = 0;</span>
+<span class="fc bfc" id="L145" title="All 2 branches covered.">                    if (topLeft.x != bottomRight.x) {</span>
+<span class="fc" id="L146">                        size = bottomRight.x - topLeft.x;</span>
+<span class="fc" id="L147">                        dimensions++;</span>
+                    }
+<span class="fc bfc" id="L149" title="All 2 branches covered.">                    if (topLeft.y != bottomRight.y) {</span>
+<span class="fc" id="L150">                        size = bottomRight.y - topLeft.y;</span>
+<span class="fc" id="L151">                        dimensions++;</span>
+                    }
+
+<span class="fc bfc" id="L154" title="All 2 branches covered.">                    if (dimensions == 2)</span>
+<span class="fc" id="L155">                        return 1;</span>
+<span class="fc bfc" id="L156" title="All 2 branches covered.">                    if (!itsFreeRealEstate(topLeft, bottomRight, false))</span>
+<span class="fc" id="L157">                        return 2;</span>
+<span class="fc bfc" id="L158" title="All 2 branches covered.">                    if (size &gt;= ships.length)</span>
+<span class="fc" id="L159">                        return 3;</span>
+
+<span class="fc" id="L161">                    shipsLeft[size]--;</span>
+                }
+            }
+        }
+<span class="fc bfc" id="L165" title="All 2 branches covered.">        for (int i = 0; i &lt; shipsLeft.length; ++i)</span>
+<span class="fc bfc" id="L166" title="All 2 branches covered.">            if (shipsLeft[i] != 0)</span>
+<span class="fc" id="L167">                return 4;</span>
+<span class="fc" id="L168">        return 0;</span>
+    }
+
+    public static Board random() {
+<span class="fc" id="L172">        Board board = new Board();</span>
+<span class="fc" id="L173">        Random rand = new Random();</span>
+
+<span class="fc bfc" id="L175" title="All 2 branches covered.">        for (int size = 0; size &lt; ships.length; ++size) {</span>
+<span class="fc bfc" id="L176" title="All 2 branches covered.">            for (int iter = 0; iter &lt; ships[size]; ++iter) {</span>
+                Coordinates&lt;Integer&gt; U, V;
+<span class="fc" id="L178">                int attempts = 0;</span>
+                while (true) {
+<span class="fc" id="L180">                    U = new Coordinates&lt;Integer&gt;(rand.nextInt(Game.n), rand.nextInt(Game.n));</span>
+<span class="fc" id="L181">                    V = U.clone();</span>
+<span class="fc bfc" id="L182" title="All 4 branches covered.">                    if (rand.nextBoolean() &amp;&amp; U.x + size &lt; Game.n)</span>
+<span class="fc" id="L183">                        V.x += size;</span>
+<span class="fc bfc" id="L184" title="All 2 branches covered.">                    else if (U.y + size &lt; Game.n)</span>
+<span class="fc" id="L185">                        V.y += size;</span>
+                    else
+                        continue;
+<span class="fc bfc" id="L188" title="All 2 branches covered.">                    if (board.itsFreeRealEstate(U, V, true))</span>
+<span class="fc" id="L189">                        break;</span>
+
+<span class="fc" id="L191">                    attempts += 1;</span>
+<span class="pc bpc" id="L192" title="1 of 2 branches missed.">                    if (attempts == 1000)</span>
+<span class="nc" id="L193">                        return Board.random();</span>
+                }
+<span class="fc bfc" id="L195" title="All 2 branches covered.">                for (int i = U.x; i &lt;= V.x; ++i)</span>
+<span class="fc bfc" id="L196" title="All 2 branches covered.">                    for (int j = U.y; j &lt;= V.y; ++j)</span>
+<span class="fc" id="L197">                        board.setState(i, j, CellState.PRESENT);</span>
+            }
+        }
+<span class="fc" id="L200">        return board;</span>
+    }
+
+    private boolean shipStatus(Coordinates&lt;Integer&gt; point, Coordinates&lt;Integer&gt; previous) {
+<span class="fc" id="L204">        boolean destroyed = true;</span>
+<span class="fc bfc" id="L205" title="All 2 branches covered.">        for (Coordinates&lt;Integer&gt; direction : directions) {</span>
+<span class="fc" id="L206">            Coordinates&lt;Integer&gt; next = new Coordinates&lt;Integer&gt;(point.x + direction.x, point.y + direction.y);</span>
+<span class="fc bfc" id="L207" title="All 6 branches covered.">            if (inBound(next) &amp;&amp; !next.equals(previous) &amp;&amp; isShip(getState(next)))</span>
+<span class="pc bpc" id="L208" title="1 of 4 branches missed.">                destroyed = destroyed &amp;&amp; shipStatus(next, point);</span>
+<span class="fc" id="L209">        }</span>
+<span class="fc bfc" id="L210" title="All 4 branches covered.">        return destroyed &amp;&amp; (getState(point) != CellState.PRESENT);</span>
+    }
+
+    private void destroyShip(Coordinates&lt;Integer&gt; point, Coordinates&lt;Integer&gt; previous) {
+<span class="fc" id="L214">        setState(point, CellState.DESTROYED);</span>
+<span class="fc bfc" id="L215" title="All 2 branches covered.">        for (Coordinates&lt;Integer&gt; direction : directions) {</span>
+<span class="fc" id="L216">            Coordinates&lt;Integer&gt; next = new Coordinates&lt;Integer&gt;(point.x + direction.x, point.y + direction.y);</span>
+<span class="fc bfc" id="L217" title="All 6 branches covered.">            if (inBound(next) &amp;&amp; !next.equals(previous) &amp;&amp; isShip(getState(next)))</span>
+<span class="fc" id="L218">                destroyShip(next, point);</span>
+<span class="fc" id="L219">        }</span>
+<span class="fc" id="L220">    }</span>
+
+    public void updateShip(Coordinates&lt;Integer&gt; point) {
+<span class="fc" id="L223">        boolean destroyed = shipStatus(point, point);</span>
+<span class="fc bfc" id="L224" title="All 2 branches covered.">        if (destroyed)</span>
+<span class="fc" id="L225">            destroyShip(point, point);</span>
+<span class="fc" id="L226">    }</span>
+
+    public boolean theEnd() {
+<span class="fc bfc" id="L229" title="All 2 branches covered.">        for (int i = 0; i &lt; Game.n; ++i) {</span>
+<span class="fc bfc" id="L230" title="All 2 branches covered.">            for (int j = 0; j &lt; Game.n; ++j) {</span>
+<span class="fc bfc" id="L231" title="All 2 branches covered.">                if (getState(i, j) == CellState.PRESENT)</span>
+<span class="fc" id="L232">                    return false;</span>
+            }
+        }
+<span class="fc" id="L235">        return true;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

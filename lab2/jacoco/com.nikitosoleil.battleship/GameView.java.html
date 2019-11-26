@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameView.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">lab2$Tests_in__com_nikitosoleil_battleship_.exec</a> &gt; <a href="index.source.html" class="el_package">com.nikitosoleil.battleship</a> &gt; <span class="el_source">GameView.java</span></div><h1>GameView.java</h1><pre class="source lang-java linenums">package com.nikitosoleil.battleship;
+
+import android.content.Context;
+import android.view.MotionEvent;
+import android.view.SurfaceView;
+import android.view.SurfaceHolder;
+
+
+public class GameView extends SurfaceView implements SurfaceHolder.Callback {
+    SurfaceHolder holder;
+    Game game;
+    Drawer drawer;
+    InputManager inputManager;
+
+    public GameView(Context context) {
+<span class="nc" id="L16">        super(context);</span>
+
+<span class="nc" id="L18">        holder = getHolder();</span>
+<span class="nc" id="L19">        holder.addCallback(this);</span>
+
+<span class="nc" id="L21">        drawer = new Drawer(this, getHolder());</span>
+<span class="nc" id="L22">        Bot bot = new Bot();</span>
+<span class="nc" id="L23">        game = new Game(drawer, bot);</span>
+<span class="nc" id="L24">        inputManager = new InputManager(drawer, game);</span>
+<span class="nc" id="L25">    }</span>
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+<span class="nc" id="L29">        inputManager.onTouch(event.getX(), event.getY());</span>
+<span class="nc" id="L30">        return super.onTouchEvent(event);</span>
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+<span class="nc" id="L35">        drawer.initialize(this, holder);</span>
+<span class="nc" id="L36">        drawer.draw(game.getBotBoard(), false, &quot;YOUR TURN&quot;);</span>
+<span class="nc" id="L37">        inputManager = new InputManager(drawer, game);</span>
+<span class="nc" id="L38">    }</span>
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+<span class="nc" id="L43">    }</span>
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+
+<span class="nc" id="L48">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

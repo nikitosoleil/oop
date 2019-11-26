@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BoardTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">lab2$Tests_in__com_nikitosoleil_battleship_.exec</a> &gt; <a href="index.source.html" class="el_package">com.nikitosoleil.battleship</a> &gt; <span class="el_source">BoardTest.java</span></div><h1>BoardTest.java</h1><pre class="source lang-java linenums">package com.nikitosoleil.battleship;
+
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
+
+<span class="fc" id="L10">public class BoardTest {</span>
+    @Test
+    public void isWater() {
+<span class="fc" id="L13">        assertTrue(Board.isWater(Board.CellState.EMPTY));</span>
+<span class="fc" id="L14">        assertTrue(Board.isWater(Board.CellState.TRIED));</span>
+<span class="fc" id="L15">        assertFalse(Board.isWater(Board.CellState.PRESENT));</span>
+<span class="fc" id="L16">        assertFalse(Board.isWater(Board.CellState.FOUND));</span>
+<span class="fc" id="L17">        assertFalse(Board.isWater(Board.CellState.DESTROYED));</span>
+<span class="fc" id="L18">    }</span>
+
+    @Test
+    public void isShip() {
+<span class="fc" id="L22">        assertFalse(Board.isShip(Board.CellState.EMPTY));</span>
+<span class="fc" id="L23">        assertFalse(Board.isShip(Board.CellState.TRIED));</span>
+<span class="fc" id="L24">        assertTrue(Board.isShip(Board.CellState.PRESENT));</span>
+<span class="fc" id="L25">        assertTrue(Board.isShip(Board.CellState.FOUND));</span>
+<span class="fc" id="L26">        assertTrue(Board.isShip(Board.CellState.DESTROYED));</span>
+<span class="fc" id="L27">    }</span>
+
+    @Test
+    public void ships() {
+<span class="pc bpc" id="L31" title="1 of 2 branches missed.">        assertTrue(Board.ships.length &gt; 1);</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        for (Integer count : Board.ships) {</span>
+<span class="pc bpc" id="L33" title="1 of 2 branches missed.">            assertTrue(count &gt;= 0);</span>
+        }
+<span class="fc" id="L35">    }</span>
+
+    @Test
+    public void directions() {
+<span class="fc" id="L39">        assertEquals(4, Board.directions.size());</span>
+<span class="fc" id="L40">    }</span>
+
+    @Test
+    public void creation() {
+<span class="fc" id="L44">        Board board = new Board();</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        for (int i = 0; i &lt; Game.n; ++i) {</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">            for (int j = 0; j &lt; Game.n; ++j) {</span>
+<span class="fc" id="L47">                assertTrue(Board.inBound(i, j));</span>
+<span class="fc" id="L48">                assertTrue(Board.inBound(new Coordinates&lt;Integer&gt;(i, j)));</span>
+
+<span class="fc" id="L50">                assertEquals(board.getState(i, j), Board.CellState.EMPTY);</span>
+<span class="fc" id="L51">                assertEquals(board.getState(new Coordinates&lt;Integer&gt;(i, j)), Board.CellState.EMPTY);</span>
+
+<span class="fc" id="L53">                board.setState(i, j, Board.CellState.TRIED);</span>
+<span class="fc" id="L54">                assertEquals(board.getState(i, j), Board.CellState.TRIED);</span>
+<span class="fc" id="L55">                board.setState(new Coordinates&lt;Integer&gt;(i, j), Board.CellState.EMPTY);</span>
+<span class="fc" id="L56">                assertEquals(board.getState(i, j), Board.CellState.EMPTY);</span>
+            }
+        }
+<span class="fc" id="L59">        assertFalse(Board.inBound(-1, 0));</span>
+<span class="fc" id="L60">        assertFalse(Board.inBound(0, -1));</span>
+<span class="fc" id="L61">        assertFalse(Board.inBound(Game.n, 0));</span>
+<span class="fc" id="L62">        assertFalse(Board.inBound(0, Game.n));</span>
+<span class="fc" id="L63">    }</span>
+
+    @Test
+    public void validMoves() {
+<span class="fc" id="L67">        Board board = new Board();</span>
+<span class="fc" id="L68">        assertTrue(board.moveValid(1, 1));</span>
+<span class="fc" id="L69">        board.setState(1, 1, Board.CellState.TRIED);</span>
+<span class="fc" id="L70">        assertFalse(board.moveValid(1, 1));</span>
+<span class="fc" id="L71">        board.setState(2, 2, Board.CellState.PRESENT);</span>
+<span class="fc" id="L72">        assertTrue(board.moveValid(new Coordinates&lt;Integer&gt;(2, 2)));</span>
+<span class="fc" id="L73">    }</span>
+
+    @Test
+    public void getHidden() {
+<span class="fc" id="L77">        Board board = new Board();</span>
+<span class="fc" id="L78">        board.setState(0, 0, Board.CellState.TRIED);</span>
+<span class="fc" id="L79">        board.setState(0, 1, Board.CellState.PRESENT);</span>
+<span class="fc" id="L80">        board.setState(1, 0, Board.CellState.FOUND);</span>
+<span class="fc" id="L81">        board.setState(1, 1, Board.CellState.DESTROYED);</span>
+<span class="fc" id="L82">        Board hiddenBoard = board.getHidden();</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">        for (int i = 0; i &lt; Game.n; ++i) {</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">            for (int j = 0; j &lt; Game.n; ++j) {</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">                if (board.getState(i, j) == Board.CellState.PRESENT)</span>
+<span class="fc" id="L86">                    assertEquals(Board.CellState.EMPTY, hiddenBoard.getState(i, j));</span>
+                else
+<span class="fc" id="L88">                    assertEquals(board.getState(i, j), hiddenBoard.getState(i, j));</span>
+            }
+        }
+<span class="fc" id="L91">    }</span>
+
+    @Test
+    public void cloning() {
+<span class="fc" id="L95">        Board board = new Board();</span>
+<span class="fc" id="L96">        Board hiddenBoard = board.getHidden();</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">        for (int i = 0; i &lt; Game.n; ++i) {</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">            for (int j = 0; j &lt; Game.n; ++j)</span>
+<span class="fc" id="L99">                assertEquals(board.getState(i, j), hiddenBoard.getState(i, j));</span>
+        }
+
+<span class="fc" id="L102">    }</span>
+
+    @Test
+    public void invalidness2dshipPresent() {
+<span class="fc" id="L106">        int[][] mask = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},</span>
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 2, 0},
+                {0, 0, 0, 0, 0, 0, 0, 2, 2, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
+<span class="fc" id="L116">        Board board = Board.fromMask(mask);</span>
+<span class="fc" id="L117">        assertEquals(1, board.stateInvalid());</span>
+<span class="fc" id="L118">    }</span>
+
+    @Test
+    public void invalidnessShipsAdjacent() {
+<span class="fc" id="L122">        int[][] mask = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},</span>
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 2, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 2, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 2, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 2, 2, 2, 2, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
+<span class="fc" id="L132">        Board board = Board.fromMask(mask);</span>
+<span class="fc" id="L133">        assertEquals(2, board.stateInvalid());</span>
+<span class="fc" id="L134">    }</span>
+
+    @Test
+    public void invalidnessShipsTooBig() {
+<span class="fc" id="L138">        int[][] mask = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},</span>
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 2, 2, 2, 2, 2, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
+<span class="fc" id="L148">        Board board = Board.fromMask(mask);</span>
+<span class="fc" id="L149">        assertEquals(3, board.stateInvalid());</span>
+<span class="fc" id="L150">    }</span>
+
+    @Test
+    public void invalidnessWrongSetOfShips() {
+<span class="fc" id="L154">        int[][] mask = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},</span>
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 2, 2, 0, 0, 0},
+                {0, 0, 0, 2, 0, 0, 0, 0, 2, 0},
+                {0, 0, 0, 2, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 2, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 2, 2, 2, 2, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
+<span class="fc" id="L164">        Board board = Board.fromMask(mask);</span>
+<span class="fc" id="L165">        assertEquals(4, board.stateInvalid());</span>
+<span class="fc" id="L166">    }</span>
+
+    @Test
+    public void invalidnessEverythingIsCorrect() {
+<span class="fc" id="L170">        int[][] mask = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},</span>
+                {0, 0, 2, 0, 0, 0, 2, 0, 0, 2},
+                {0, 0, 0, 0, 2, 0, 0, 0, 0, 2},
+                {2, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {2, 0, 0, 0, 0, 2, 2, 0, 0, 0},
+                {2, 0, 0, 2, 0, 0, 0, 0, 2, 0},
+                {0, 0, 0, 2, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 2, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 2, 2, 2, 2, 0},
+                {0, 2, 2, 0, 0, 0, 0, 0, 0, 0}};
+<span class="fc" id="L180">        Board board = Board.fromMask(mask);</span>
+<span class="fc" id="L181">        assertEquals(0, board.stateInvalid());</span>
+<span class="fc" id="L182">    }</span>
+
+    @Test
+    public void randomness() {
+<span class="fc bfc" id="L186" title="All 2 branches covered.">        for (int t = 0; t &lt; 10; ++t) {</span>
+<span class="fc" id="L187">            Board board = Board.random();</span>
+<span class="fc" id="L188">            assertEquals(0, board.stateInvalid());</span>
+        }
+<span class="fc" id="L190">    }</span>
+
+    @Test
+    public void updateShip() {
+<span class="fc" id="L194">        int[][] mask = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},</span>
+                {0, 0, 2, 0, 0, 0, 2, 0, 0, 2},
+                {0, 0, 0, 0, 2, 0, 0, 0, 0, 2},
+                {2, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {2, 0, 0, 0, 0, 2, 2, 0, 0, 0},
+                {2, 0, 0, 2, 0, 0, 0, 0, 2, 0},
+                {0, 0, 0, 2, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 2, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 2, 2, 2, 2, 0},
+                {0, 2, 2, 0, 0, 0, 0, 0, 0, 0}};
+<span class="fc" id="L204">        Board board = Board.fromMask(mask);</span>
+
+<span class="fc" id="L206">        List&lt;Coordinates&lt;Integer&gt;&gt; fireCells = new ArrayList&lt;Coordinates&lt;Integer&gt;&gt;();</span>
+<span class="fc" id="L207">        fireCells.add(new Coordinates&lt;Integer&gt;(1, 2));</span>
+<span class="fc" id="L208">        fireCells.add(new Coordinates&lt;Integer&gt;(3, 0));</span>
+<span class="fc" id="L209">        fireCells.add(new Coordinates&lt;Integer&gt;(1, 9));</span>
+<span class="fc" id="L210">        fireCells.add(new Coordinates&lt;Integer&gt;(2, 9));</span>
+
+<span class="fc" id="L212">        int[][] expectedNewMask = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},</span>
+                {0, 0, 4, 0, 0, 0, 2, 0, 0, 4},
+                {0, 0, 0, 0, 2, 0, 0, 0, 0, 4},
+                {3, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {2, 0, 0, 0, 0, 2, 2, 0, 0, 0},
+                {2, 0, 0, 2, 0, 0, 0, 0, 2, 0},
+                {0, 0, 0, 2, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 2, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 2, 2, 2, 2, 0},
+                {0, 2, 2, 0, 0, 0, 0, 0, 0, 0}};
+<span class="fc" id="L222">        Board expectedNewBoard = Board.fromMask(expectedNewMask);</span>
+
+<span class="fc" id="L224">        Board newBoard = board.clone();</span>
+<span class="fc bfc" id="L225" title="All 2 branches covered.">        for (Coordinates&lt;Integer&gt; coords : fireCells) {</span>
+<span class="fc" id="L226">            newBoard.setState(coords, Board.CellState.FOUND);</span>
+<span class="fc" id="L227">            newBoard.updateShip(coords);</span>
+<span class="fc" id="L228">        }</span>
+
+<span class="fc bfc" id="L230" title="All 2 branches covered.">        for (int i = 0; i &lt; Game.n; ++i) {</span>
+<span class="fc bfc" id="L231" title="All 2 branches covered.">            for (int j = 0; j &lt; Game.n; ++j) {</span>
+<span class="fc" id="L232">                assertEquals(expectedNewBoard.getState(i, j), newBoard.getState(i, j));</span>
+            }
+        }
+<span class="fc" id="L235">    }</span>
+
+    @Test
+    public void theEnd() {
+<span class="fc" id="L239">        int[][] mask = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},</span>
+                {0, 0, 4, 0, 0, 0, 4, 0, 0, 4},
+                {0, 0, 0, 0, 4, 0, 0, 0, 0, 4},
+                {4, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {4, 0, 0, 0, 0, 4, 4, 0, 0, 0},
+                {4, 0, 0, 4, 0, 0, 0, 0, 4, 0},
+                {0, 0, 0, 4, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 4, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 4, 4, 4, 4, 0},
+                {0, 2, 4, 0, 0, 0, 0, 0, 0, 0}};
+<span class="fc" id="L249">        Board board = Board.fromMask(mask);</span>
+<span class="fc" id="L250">        assertFalse(board.theEnd());</span>
+<span class="fc" id="L251">        board.setState(9, 1, Board.CellState.DESTROYED);</span>
+<span class="fc" id="L252">        assertTrue(board.theEnd());</span>
+<span class="fc" id="L253">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

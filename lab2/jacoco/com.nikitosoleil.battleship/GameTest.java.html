@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">lab2$Tests_in__com_nikitosoleil_battleship_.exec</a> &gt; <a href="index.source.html" class="el_package">com.nikitosoleil.battleship</a> &gt; <span class="el_source">GameTest.java</span></div><h1>GameTest.java</h1><pre class="source lang-java linenums">package com.nikitosoleil.battleship;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+class TestBot implements Rival {
+    private Coordinates&lt;Integer&gt; nextMove;
+    public boolean restarted;
+
+<span class="fc" id="L12">    public TestBot() {</span>
+<span class="fc" id="L13">        init();</span>
+<span class="fc" id="L14">    }</span>
+
+    public void init() {
+<span class="fc" id="L17">        nextMove = new Coordinates&lt;Integer&gt;(0, 0);</span>
+<span class="fc" id="L18">        restarted = true;</span>
+<span class="fc" id="L19">    }</span>
+
+    public void setNextMove(Coordinates&lt;Integer&gt; nextMove) {
+<span class="fc" id="L22">        this.nextMove = nextMove;</span>
+<span class="fc" id="L23">    }</span>
+
+    public Coordinates&lt;Integer&gt; nextMove(Board board) {
+<span class="fc" id="L26">        return nextMove;</span>
+    }
+}
+
+<span class="fc" id="L30">public class GameTest {</span>
+    private Game game;
+    private TestBot bot;
+
+    @Before
+    public void createGame() {
+<span class="fc" id="L36">        bot = new TestBot();</span>
+<span class="fc" id="L37">        game = new Game(null, bot);</span>
+<span class="fc" id="L38">        game.delay = game.finalDelay = 0;</span>
+<span class="fc" id="L39">    }</span>
+
+    void initWithDummyBoard() {
+<span class="fc" id="L42">        int[][] mask = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},</span>
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 2}};
+<span class="fc" id="L52">        Board botBoard = Board.fromMask(mask);</span>
+<span class="fc" id="L53">        game.setBotBoard(botBoard);</span>
+<span class="fc" id="L54">        Board playerBoard = Board.fromMask(mask);</span>
+<span class="fc" id="L55">        game.setPlayerBoard(playerBoard);</span>
+<span class="fc" id="L56">        bot.restarted = false;</span>
+<span class="fc" id="L57">    }</span>
+
+    @Test
+    public void noFinish() {
+<span class="fc" id="L61">        initWithDummyBoard();</span>
+<span class="fc" id="L62">        game.playerMove(0, 0);</span>
+<span class="fc" id="L63">        assertEquals(Board.CellState.TRIED, game.getPlayerBoard().getState(0, 0));</span>
+<span class="fc" id="L64">        assertEquals(Board.CellState.TRIED, game.getBotBoard().getState(0, 0));</span>
+<span class="fc" id="L65">        assertFalse(bot.restarted);</span>
+<span class="fc" id="L66">    }</span>
+
+    @Test
+    public void playerFinishes() {
+<span class="fc" id="L70">        initWithDummyBoard();</span>
+<span class="fc" id="L71">        game.playerMove(9, 9);</span>
+<span class="fc" id="L72">        assertTrue(bot.restarted);</span>
+<span class="fc" id="L73">    }</span>
+
+    @Test
+    public void botFinishes() {
+<span class="fc" id="L77">        initWithDummyBoard();</span>
+<span class="fc" id="L78">        bot.setNextMove(new Coordinates&lt;Integer&gt;(9, 9));</span>
+<span class="fc" id="L79">        game.playerMove(0, 0);</span>
+<span class="fc" id="L80">        assertTrue(bot.restarted);</span>
+<span class="fc" id="L81">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
