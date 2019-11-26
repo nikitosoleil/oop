@@ -101,17 +101,6 @@ public class BoardTest {
 
     }
 
-    static public Board mask2board(int[][] mask) {
-        Board board = new Board();
-        for (int i = 0; i < Game.n; ++i) {
-            for (int j = 0; j < Game.n; ++j) {
-                Board.CellState state = Board.CellState.values()[mask[i][j]];
-                board.setState(i, j, state);
-            }
-        }
-        return board;
-    }
-
     @Test
     public void invalidness2dshipPresent() {
         int[][] mask = {{0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -124,7 +113,7 @@ public class BoardTest {
                 {0, 0, 0, 0, 0, 0, 0, 0, 2, 0},
                 {0, 0, 0, 0, 0, 0, 0, 2, 2, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
-        Board board = mask2board(mask);
+        Board board = Board.fromMask(mask);
         assertEquals(1, board.stateInvalid());
     }
 
@@ -140,7 +129,7 @@ public class BoardTest {
                 {0, 0, 0, 0, 2, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 2, 2, 2, 2, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
-        Board board = mask2board(mask);
+        Board board = Board.fromMask(mask);
         assertEquals(2, board.stateInvalid());
     }
 
@@ -156,7 +145,7 @@ public class BoardTest {
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 2, 2, 2, 2, 2, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
-        Board board = mask2board(mask);
+        Board board = Board.fromMask(mask);
         assertEquals(3, board.stateInvalid());
     }
 
@@ -172,7 +161,7 @@ public class BoardTest {
                 {0, 0, 0, 2, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 2, 2, 2, 2, 0},
                 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
-        Board board = mask2board(mask);
+        Board board = Board.fromMask(mask);
         assertEquals(4, board.stateInvalid());
     }
 
@@ -188,7 +177,7 @@ public class BoardTest {
                 {0, 0, 0, 2, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 2, 2, 2, 2, 0},
                 {0, 2, 2, 0, 0, 0, 0, 0, 0, 0}};
-        Board board = mask2board(mask);
+        Board board = Board.fromMask(mask);
         assertEquals(0, board.stateInvalid());
     }
 
@@ -213,7 +202,7 @@ public class BoardTest {
                 {0, 0, 0, 2, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 2, 2, 2, 2, 0},
                 {0, 2, 2, 0, 0, 0, 0, 0, 0, 0}};
-        Board board = mask2board(mask);
+        Board board = Board.fromMask(mask);
 
         List<Coordinates<Integer>> fireCells = new ArrayList<Coordinates<Integer>>();
         fireCells.add(new Coordinates<Integer>(1, 2));
@@ -231,7 +220,7 @@ public class BoardTest {
                 {0, 0, 0, 2, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 2, 2, 2, 2, 0},
                 {0, 2, 2, 0, 0, 0, 0, 0, 0, 0}};
-        Board expectedNewBoard = mask2board(expectedNewMask);
+        Board expectedNewBoard = Board.fromMask(expectedNewMask);
 
         Board newBoard = board.clone();
         for (Coordinates<Integer> coords : fireCells) {
@@ -258,7 +247,7 @@ public class BoardTest {
                 {0, 0, 0, 4, 0, 0, 0, 0, 0, 0},
                 {0, 0, 0, 0, 0, 4, 4, 4, 4, 0},
                 {0, 2, 4, 0, 0, 0, 0, 0, 0, 0}};
-        Board board = mask2board(mask);
+        Board board = Board.fromMask(mask);
         assertFalse(board.theEnd());
         board.setState(9, 1, Board.CellState.DESTROYED);
         assertTrue(board.theEnd());

@@ -9,12 +9,6 @@ public class Bot implements Rival {
         rand = new Random();
     }
 
-    public Board initial() {
-        Board board = new Board();
-        board.randomize();
-        return board;
-    }
-
     private boolean makeSense(Board board, Coordinates<Integer> move) {
         for (int i = Math.max(0, move.x - 1); i <= Math.min(Game.n - 1, move.x + 1); ++i)
             for (int j = Math.max(0, move.y - 1); j <= Math.min(Game.n - 1, move.y + 1); ++j)

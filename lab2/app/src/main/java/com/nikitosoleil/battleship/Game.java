@@ -6,6 +6,7 @@ public class Game {
     private Rival bot;
     private Board playerBoard, botBoard;
     private final long delay = 2000;
+    private final long finalDelay = 5000;
     public Thread animationThread;
 
     public Game(Drawer drawer) {
@@ -19,7 +20,7 @@ public class Game {
         playerBoard.randomize();
 
         botBoard = new Board();
-        playerBoard.randomize();
+        botBoard.randomize();
 
         bot = new Bot();
     }
@@ -66,12 +67,12 @@ public class Game {
             }
         }
         if (botBoard.theEnd()) {
-            updateView(botBoard, true, "YOU WON", delay);
-            updateView(playerBoard, true, "YOU WON", delay);
+            updateView(botBoard, true, "YOU WON", finalDelay);
+            updateView(playerBoard, true, "YOU WON", finalDelay);
             init();
         } else if (playerBoard.theEnd()) {
-            updateView(playerBoard, true, "BOT WON", delay);
-            updateView(botBoard, true, "BOT WON", delay);
+            updateView(playerBoard, true, "BOT WON", finalDelay);
+            updateView(botBoard, true, "BOT WON", finalDelay);
             init();
         }
         updateView(botBoard, false, "YOUR TURN", 0);
