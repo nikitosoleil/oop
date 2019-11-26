@@ -3,8 +3,7 @@ package com.nikitosoleil.battleship;
 public class Game {
     public static final int n = 10;
     private Drawer drawer;
-    private Player player;
-    private Bot bot;
+    private Rival bot;
     private Board playerBoard, botBoard;
     private final long delay = 2000;
     public Thread animationThread;
@@ -16,10 +15,13 @@ public class Game {
     }
 
     public void init() {
-        player = new Player();
-        playerBoard = player.initial();
+        playerBoard = new Board();
+        playerBoard.randomize();
+
+        botBoard = new Board();
+        playerBoard.randomize();
+
         bot = new Bot();
-        botBoard = bot.initial();
     }
 
     public Board getPlayerBoard() {
@@ -30,30 +32,35 @@ public class Game {
         return botBoard;
     }
 
-    public void playerMove(Pair<Integer> playerMove) {
+    private boolean step(Board board, Coordinates<Integer> move) {
+        if (board.getState(move) == Board.CellState.PRESENT) {
+            board.setState(move, Board.CellState.FOUND);
+            board.updateShip(move);
+        } else if (!board.theEnd()) {
+            board.setState(move, Board.CellState.TRIED);
+            return true;
+        }
+        return false;
+    }
+
+
+    public void playerMove(Coordinates<Integer> playerMove) {
         Logger.log(String.format("Got player move: %s, %s", playerMove.x, playerMove.y));
         if (botBoard.moveValid(playerMove) && !botBoard.theEnd()) {
-            if (botBoard.getState(playerMove) == Board.CellState.PRESENT) {
-                botBoard.setState(playerMove, Board.CellState.FOUND);
-                botBoard.updateShip(playerMove);
-            } else if (!botBoard.theEnd()) {
-                botBoard.setState(playerMove, Board.CellState.TRIED);
+            boolean botTurn = step(botBoard, playerMove);
+            if (botTurn) {
                 updateView(botBoard, false, "YOUR TURN", delay);
 
-                Pair<Integer> botMove;
+                Coordinates<Integer> botMove;
                 while (!playerBoard.theEnd()) {
                     updateView(playerBoard, true, "BOT TURN", delay);
 
                     Board hiddenPlayerBoard = playerBoard.getHidden();
                     botMove = bot.nextMove(hiddenPlayerBoard);
 
-                    if (playerBoard.getState(botMove) == Board.CellState.PRESENT) {
-                        playerBoard.setState(botMove, Board.CellState.FOUND);
-                        playerBoard.updateShip(botMove);
-                    } else {
-                        playerBoard.setState(botMove, Board.CellState.TRIED);
+                    boolean playerTurn = step(playerBoard, botMove);
+                    if (playerTurn)
                         break;
-                    }
                 }
                 updateView(playerBoard, true, "BOT TURN", delay);
             }
@@ -76,7 +83,7 @@ public class Game {
     }
 
     public void playerMove(int x, int y) {
-        playerMove(new Pair<Integer>(x, y));
+        playerMove(new Coordinates<Integer>(x, y));
     }
 
     private void freeze(final long n) {

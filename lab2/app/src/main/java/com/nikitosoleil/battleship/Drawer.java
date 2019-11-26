@@ -13,7 +13,7 @@ public class Drawer {
     static final float fontSize = 96;
     float length, step;
     float lineWidth = 10;
-    Pair<Float> topLeft, bottomRight, topTextCorner;
+    Coordinates<Float> topLeft, bottomRight, topTextCorner;
     SurfaceHolder holder;
 
     public Drawer(GameView gameView, SurfaceHolder holder) {
@@ -26,10 +26,10 @@ public class Drawer {
         float width = gameView.getWidth(), height = gameView.getHeight();
         length = Math.min(width, height) - 2 * margin;
         step = length / Game.n;
-        topLeft = new Pair<Float>((width - length) / 2, (height - length) / 2);
-        bottomRight = new Pair<Float>(width - topLeft.x, height - topLeft.y);
+        topLeft = new Coordinates<Float>((width - length) / 2, (height - length) / 2);
+        bottomRight = new Coordinates<Float>(width - topLeft.x, height - topLeft.y);
 
-        topTextCorner = new Pair<Float>(margin, topLeft.y / 2 + fontSize / 2);
+        topTextCorner = new Coordinates<Float>(margin, topLeft.y / 2 + fontSize / 2);
     }
 
     public void draw(Board board, boolean permission, String topText) {
