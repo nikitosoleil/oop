@@ -75,7 +75,10 @@ public class Board {
     }
 
     public boolean moveValid(int x, int y) {
-        return Board.inBound(x, y) && state[x][y] == CellState.EMPTY || state[x][y] == CellState.PRESENT;
+        if (Board.inBound(x, y))
+            return state[x][y] == CellState.EMPTY || state[x][y] == CellState.PRESENT;
+        else
+            return false;
     }
 
     public boolean moveValid(Coordinates<Integer> point) {
