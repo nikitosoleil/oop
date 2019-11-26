@@ -30,6 +30,10 @@ public class Board {
 
     public Board() {
         state = new CellState[Game.n][Game.n];
+        init();
+    }
+
+    public void init() {
         for (CellState[] row : state)
             Arrays.fill(row, CellState.EMPTY);
     }
@@ -71,7 +75,7 @@ public class Board {
     }
 
     public boolean moveValid(int x, int y) {
-        return state[x][y] == CellState.EMPTY || state[x][y] == CellState.PRESENT;
+        return Board.inBound(x, y) && state[x][y] == CellState.EMPTY || state[x][y] == CellState.PRESENT;
     }
 
     public boolean moveValid(Coordinates<Integer> point) {
@@ -161,11 +165,14 @@ public class Board {
         return 0;
     }
 
-    public void randomize() {
+    public static Board random() {
+        Board board = new Board();
         Random rand = new Random();
+
         for (int size = 0; size < ships.length; ++size) {
             for (int iter = 0; iter < ships[size]; ++iter) {
                 Coordinates<Integer> U, V;
+                int attempts = 0;
                 while (true) {
                     U = new Coordinates<Integer>(rand.nextInt(Game.n), rand.nextInt(Game.n));
                     V = U.clone();
@@ -175,14 +182,19 @@ public class Board {
                         V.y += size;
                     else
                         continue;
-                    if (itsFreeRealEstate(U, V, true))
+                    if (board.itsFreeRealEstate(U, V, true))
                         break;
+
+                    attempts += 1;
+                    if (attempts == 1000)
+                        return Board.random();
                 }
                 for (int i = U.x; i <= V.x; ++i)
                     for (int j = U.y; j <= V.y; ++j)
-                        setState(i, j, CellState.PRESENT);
+                        board.setState(i, j, CellState.PRESENT);
             }
         }
+        return board;
     }
 
     private boolean shipStatus(Coordinates<Integer> point, Coordinates<Integer> previous) {

@@ -183,9 +183,8 @@ public class BoardTest {
 
     @Test
     public void randomness() {
-        for (int i = 0; i < 10; ++i) {
-            Board board = new Board();
-            board.randomize();
+        for (int t = 0; t < 10; ++t) {
+            Board board = Board.random();
             assertEquals(0, board.stateInvalid());
         }
     }

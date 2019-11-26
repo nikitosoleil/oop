@@ -11,7 +11,7 @@ public class InputManager {
         gameThread = new Thread();
     }
 
-    private static int getIndex(float start, float end, int count, float x) {
+    public static int getIndex(float start, float end, int count, float x) {
         if (x > start && x < end)
             return (int) Math.floor((x - start) * count / (end - start));
         else

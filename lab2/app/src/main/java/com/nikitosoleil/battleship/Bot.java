@@ -6,6 +6,10 @@ public class Bot implements Rival {
     Random rand;
 
     public Bot() {
+        init();
+    }
+
+    public void init() {
         rand = new Random();
     }
 
@@ -25,7 +29,7 @@ public class Bot implements Rival {
                     Logger.log(String.format("Bot found point of interest: %s %s", i, j));
                     for (Coordinates<Integer> direction : Board.directions) {
                         Coordinates<Integer> candidate = new Coordinates<Integer>(i + direction.x, j + direction.y);
-                        if (Board.inBound(candidate) && board.moveValid(candidate)) {
+                        if (board.moveValid(candidate)) {
                             move = candidate;
                             Logger.log(String.format("Bot found optimal move: %s %s", move.x, move.y));
                         }

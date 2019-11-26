@@ -19,7 +19,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         holder.addCallback(this);
 
         drawer = new Drawer(this, getHolder());
-        game = new Game(drawer);
+        Bot bot = new Bot();
+        game = new Game(drawer, bot);
         inputManager = new InputManager(drawer, game);
     }
 
@@ -38,7 +39,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        
+
     }
 
     @Override
