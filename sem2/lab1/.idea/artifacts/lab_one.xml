@@ -1,0 +1,20 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="lab_one">
+    <output-path>$PROJECT_DIR$/out/artifacts/lab_one</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="lab_one" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Maven: org.json:json:20160810" />
+          <element id="library" level="project" name="Maven: org.openjfx:javafx-base:13" />
+          <element id="library" level="project" name="Maven: org.openjfx:javafx-base:win:13" />
+          <element id="library" level="project" name="Maven: org.openjfx:javafx-graphics:13" />
+          <element id="library" level="project" name="Maven: org.openjfx:javafx-graphics:win:13" />
+        </element>
+      </element>
+      <element id="javaee-facet-resources" facet="lab_one/web/Web" />
+    </root>
+  </artifact>
+</component>
