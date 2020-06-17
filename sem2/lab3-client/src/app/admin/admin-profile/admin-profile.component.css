@@ -1,0 +1,9 @@
+button {
+    width: 20em;
+    margin: 1em;
+}
+
+mat-card {
+    width: 50em;
+    margin: 5em;
+}

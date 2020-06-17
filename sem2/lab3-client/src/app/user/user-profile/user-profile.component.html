@@ -1,0 +1,18 @@
+<div class="container" fxLayout.gt-sm="row" fxLayout.gt-xs="column" fxLayoutWrap fxLayoutGap="3rem"
+     fxLayoutAlign="center">
+    <div fxLayout="column" fxLayoutGap="1rem">
+        <mat-card id="profile-card">
+            <mat-card-content fxLayout="column" fxLayoutAlign="space-around">
+                <h3>Email: {{userData?.email}}</h3>
+                <h3>Name: {{userData?.name}}</h3>
+                <h3>Surname: {{userData?.surname}}</h3>
+            </mat-card-content>
+        </mat-card>
+        <mat-card class="card" fxLayout="row" fxLayoutAlign="center">
+            <button mat-raised-button color="accent" (click)="addService()">Add service</button>
+        </mat-card>
+    </div>
+
+    <app-user-bill-list class="cards" [bills]="bills" [user]="userData"></app-user-bill-list>
+
+</div>

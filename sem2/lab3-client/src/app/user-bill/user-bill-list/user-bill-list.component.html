@@ -1,0 +1,7 @@
+<mat-card>
+    <mat-card-content>
+        <div *ngFor="let bill of bills | async">
+            <app-user-bill [bill]="bill" (paid)="load()"></app-user-bill>
+        </div>
+    </mat-card-content>
+</mat-card>

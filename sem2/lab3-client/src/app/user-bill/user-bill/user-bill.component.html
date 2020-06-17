@@ -1,0 +1,16 @@
+<mat-card>
+    <mat-card-content fxLayout="row" fxLayoutAlign="space-evenly">
+        <div>Bill</div>
+        <div>{{bill.date}}</div>
+        <div>{{bill.price}}
+            <div *ngIf="user!=null">
+                <div *ngIf="!bill.paid">
+                    <button mat-raised-button color="accent" (click)="pay()">Pay</button>
+                </div>
+            </div>
+            <div *ngIf="user==null">
+                {{bill.paid ? 'Paid' : 'Not paid'}}
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>

@@ -1,0 +1,10 @@
+<mat-card>
+    <mat-card-content fxLayout="row" fxLayoutAlign="space-evenly">
+        <div>{{service.name}} - {{service.description}}</div>
+        <div>{{service.price}}
+            <div *ngIf="user">
+                <button mat-raised-button color="accent" (click)="addService()">Add</button>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>

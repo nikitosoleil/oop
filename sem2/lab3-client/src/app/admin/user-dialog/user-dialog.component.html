@@ -1,0 +1,11 @@
+<h1 matDialogTitle>Add card</h1>
+
+<mat-dialog-content fxLayout="column">
+    <app-user-bill-list [user]="data"></app-user-bill-list>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button mat-button color="accent" (click)="addBill()">Add bill</button>
+    <button mat-button color="warn" (click)="blockUser()">{{data.blocked ? 'Unblock' : 'Block'}}</button>
+    <button mat-button matDialogClose>Close</button>
+</mat-dialog-actions>

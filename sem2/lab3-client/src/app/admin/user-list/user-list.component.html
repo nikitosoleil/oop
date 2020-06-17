@@ -1,0 +1,7 @@
+<mat-card>
+    <mat-card-content>
+        <div *ngFor="let user of users|async">
+            <app-user-card [user]="user" (click)="openUserDialog(user)"></app-user-card>
+        </div>
+    </mat-card-content>
+</mat-card>

@@ -1,0 +1,7 @@
+<mat-card>
+    <mat-card-content>
+        <div *ngFor="let service of services | async">
+            <app-service-card [service]="service" (selected)="load()"></app-service-card>
+        </div>
+    </mat-card-content>
+</mat-card>

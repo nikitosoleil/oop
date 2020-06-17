@@ -1,0 +1,31 @@
+<h1 matDialogTitle>Add card</h1>
+
+<mat-dialog-content>
+    <form [formGroup]="form" fxLayout="column">
+        <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name" placeholder="Enter service name" required maxlength="30">
+            <mat-error *ngIf="form.get('name').errors?.required">Card number cannot be empty.</mat-error>
+            <mat-error *ngIf="form.get('name').errors?.maxlength">Card number cannot be longer than 30 characters.
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Description</mat-label>
+            <input matInput formControlName="description" type="text" placeholder="Enter service description" required
+                   maxlength="50">
+            <mat-error *ngIf="form.get('description').errors?.required">Card number cannot be empty.</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Price</mat-label>
+            <input matInput formControlName="price" type="number" placeholder="Enter service price" required min="0">
+            <mat-error *ngIf="form.get('price').errors?.required">Card number cannot be empty.</mat-error>
+            <mat-error *ngIf="form.get('price').errors?.min">Card number less than 0.</mat-error>
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button mat-button (click)="submit()" color="accent">Add</button>
+    <button mat-button matDialogClose>Close dialog</button>
+
+</mat-dialog-actions>
