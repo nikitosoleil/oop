@@ -16,7 +16,7 @@ public class DBConnection {
         return DriverManager.getConnection(
                 "jdbc:postgresql://localhost:5432/space",
                 "postgres",
-                "root"
+                "0808"
         );
     }
 

@@ -48,7 +48,7 @@ public class SpaceDao {
         ResultSet results = statement.executeQuery();
 
         while (results.next()) {
-            System.out.println("Galaxy " + results.getString("name") + " has the biggest sum of temperatures. HOT!!!");
+            System.out.println("Galaxy " + results.getString("name") + " has the biggest sum of temperatures.");
         }
     }
 }
